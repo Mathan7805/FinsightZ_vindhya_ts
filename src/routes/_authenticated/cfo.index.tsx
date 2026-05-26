@@ -155,7 +155,7 @@ function CFODashboard() {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="mt-4 w-full"><Upload className="w-4 h-4 mr-2" /> Upload finance master</Button>
+            <Button asChild variant="outline" className="mt-4 w-full"><Link to="/cfo/profitability"><Upload className="w-4 h-4 mr-2" /> Upload finance master</Link></Button>
           </div>
         </div>
       </div>
