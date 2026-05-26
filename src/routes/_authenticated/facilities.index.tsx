@@ -52,8 +52,8 @@ function FacilitiesDashboard() {
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
-            <h3 className="font-display font-semibold text-lg mb-1">Electricity Consumption</h3>
-            <p className="text-xs text-muted-foreground mb-4">Trailing 6 months · '000 kWh</p>
+            <h3 className="font-display font-semibold text-lg mb-1">Electricity Spend Trend</h3>
+            <p className="text-xs text-muted-foreground mb-4">Trailing 6 months · ₹ Million</p>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={power}>
                 <defs>
@@ -66,10 +66,11 @@ function FacilitiesDashboard() {
                 <XAxis dataKey="m" stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
-                <Area type="monotone" dataKey="kwh" stroke="oklch(0.78 0.13 85)" fill="url(#pow)" strokeWidth={2} />
+                <Area type="monotone" dataKey="cost" stroke="oklch(0.78 0.13 85)" fill="url(#pow)" strokeWidth={2} name="₹ M" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
+
 
           <div className="glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-4">Buildings</h3>
