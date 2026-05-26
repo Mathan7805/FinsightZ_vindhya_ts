@@ -35,10 +35,10 @@ function OpsDashboard() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Total FTE" value="2,418" delta="+62 MoM" accent="emerald" />
-          <StatCard label="Billable FTE" value="2,184" delta="90.3%" />
-          <StatCard label="Avg SLA" value="92.7%" delta="+1.4 pts" accent="gold" />
-          <StatCard label="Avg AHT" value="324s" delta="-12s" />
+          <StatCard label="Revenue per FTE / mo" value="₹ 4,284" delta="+5.2% MoM" accent="emerald" />
+          <StatCard label="Cost per FTE / mo" value="₹ 2,712" delta="-1.8% MoM" accent="gold" />
+          <StatCard label="Ops Margin" value="36.7%" delta="+2.1 pts" />
+          <StatCard label="Billable FTE" value="2,184 / 2,418" delta="90.3% billable" />
         </div>
 
         <div className="mb-8">
@@ -48,19 +48,20 @@ function OpsDashboard() {
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
-            <h3 className="font-display font-semibold text-lg mb-1">14-day Performance Trend</h3>
-            <p className="text-xs text-muted-foreground mb-4">AHT (seconds) and SLA (%)</p>
+            <h3 className="font-display font-semibold text-lg mb-1">14-day Unit Economics Trend</h3>
+            <p className="text-xs text-muted-foreground mb-4">Revenue / FTE vs Cost / FTE (₹ per day)</p>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={trend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
                 <XAxis dataKey="d" stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
-                <Line type="monotone" dataKey="aht" stroke="oklch(0.78 0.13 85)" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="sla" stroke="oklch(0.72 0.16 162)" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="revPerFte" stroke="oklch(0.72 0.16 162)" strokeWidth={2} dot={false} name="Revenue/FTE" />
+                <Line type="monotone" dataKey="costPerFte" stroke="oklch(0.78 0.13 85)" strokeWidth={2} dot={false} name="Cost/FTE" />
               </LineChart>
             </ResponsiveContainer>
           </div>
+
 
           <div className="glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-4">Top Processes by Headcount</h3>
