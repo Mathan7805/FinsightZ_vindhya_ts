@@ -14,12 +14,12 @@ export const Route = createFileRoute("/_authenticated/facilities/")({
 import { facNav as nav } from "./facilities";
 
 const power = [
-  { m: "Jun", kwh: 142 },
-  { m: "Jul", kwh: 158 },
-  { m: "Aug", kwh: 164 },
-  { m: "Sep", kwh: 151 },
-  { m: "Oct", kwh: 148 },
-  { m: "Nov", kwh: 139 },
+  { m: "Jun", cost: 4.92 },
+  { m: "Jul", cost: 5.41 },
+  { m: "Aug", cost: 5.62 },
+  { m: "Sep", cost: 5.18 },
+  { m: "Oct", cost: 5.04 },
+  { m: "Nov", cost: 4.71 },
 ];
 
 function FacilitiesDashboard() {
