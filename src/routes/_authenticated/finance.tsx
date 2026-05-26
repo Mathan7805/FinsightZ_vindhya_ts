@@ -41,6 +41,11 @@ function FinanceDashboard() {
           <StatCard label="Reconciled" value="96.4%" delta="+1.8 pts" accent="gold" />
         </div>
 
+        <div className="mb-8">
+          <UploadCenter persona="finance" title="Finance Upload & AI Reader"
+            subtitle="Drop monthly revenue, WIP, provisions, vendor invoices — the AI engine extracts headers, totals and posts to validation." />
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-4">Active Uploads</h3>
