@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-export type Persona = "cfo" | "finance" | "it" | "operations" | "facilities";
+export type Persona = "ceo" | "cfo" | "finance" | "it" | "operations" | "facilities";
 
 export const PERSONAS: Record<Persona, { label: string; title: string; route: string; tagline: string }> = {
+  ceo: { label: "CEO / CXO", title: "Chief Executive Officer", route: "/ceo", tagline: "Enterprise pulse & strategic KPIs" },
   cfo: { label: "CFO", title: "Chief Financial Officer", route: "/cfo", tagline: "Profitability, MIS & Publish" },
   finance: { label: "Finance", title: "Finance Team Lead", route: "/finance", tagline: "Upload, validate, reconcile" },
-  it: { label: "IT Head", title: "IT / Admin Head", route: "/it", tagline: "Infra, seats & software costs" },
+  it: { label: "IT / Admin", title: "IT / Admin Head", route: "/it", tagline: "Infra, seats & software costs" },
   operations: { label: "Operations", title: "Operations Head", route: "/operations", tagline: "Process metrics & utilization" },
   facilities: { label: "Facilities", title: "Facilities Head", route: "/facilities", tagline: "Building, utilities & expenses" },
 };
