@@ -11,13 +11,7 @@ export const Route = createFileRoute("/_authenticated/it/")({
   component: ITDashboard,
 });
 
-const nav = [
-  { label: "Infra Costs", href: "/it", icon: Server },
-  { label: "Seat Utilization", href: "/it", icon: Monitor },
-  { label: "Software Stack", href: "/it", icon: Cloud },
-  { label: "Device Mapping", href: "/it", icon: HardDrive },
-  { label: "System Health", href: "/it", icon: Cpu },
-];
+import { itNav as nav } from "./it";
 
 const utilization = [
   { p: "Voice", seat: 92, sys: 78 },

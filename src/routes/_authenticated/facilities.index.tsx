@@ -11,13 +11,7 @@ export const Route = createFileRoute("/_authenticated/facilities/")({
   component: FacilitiesDashboard,
 });
 
-const nav = [
-  { label: "Buildings", href: "/facilities", icon: Building2 },
-  { label: "Utilities", href: "/facilities", icon: Zap },
-  { label: "Water & Waste", href: "/facilities", icon: Droplets },
-  { label: "Maintenance", href: "/facilities", icon: Wrench },
-  { label: "Upload Expenses", href: "/facilities", icon: Upload },
-];
+import { facNav as nav } from "./facilities";
 
 const power = [
   { m: "Jun", kwh: 142 },

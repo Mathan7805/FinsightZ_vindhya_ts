@@ -11,13 +11,7 @@ export const Route = createFileRoute("/_authenticated/operations/")({
   component: OpsDashboard,
 });
 
-const nav = [
-  { label: "Process Metrics", href: "/operations", icon: Activity },
-  { label: "Headcount", href: "/operations", icon: Users },
-  { label: "SLA & KPIs", href: "/operations", icon: Target },
-  { label: "Performance", href: "/operations", icon: TrendingUp },
-  { label: "Upload Center", href: "/operations", icon: Upload },
-];
+import { opsNav as nav } from "./operations";
 
 const trend = Array.from({ length: 14 }, (_, i) => ({
   d: `D${i + 1}`,

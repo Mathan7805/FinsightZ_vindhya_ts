@@ -12,13 +12,7 @@ export const Route = createFileRoute("/_authenticated/ceo/")({
   component: CEODashboard,
 });
 
-const nav = [
-  { label: "Enterprise Pulse", href: "/ceo", icon: Crown },
-  { label: "Business Units", href: "/ceo", icon: Briefcase },
-  { label: "Geography", href: "/ceo", icon: Globe },
-  { label: "Strategic KPIs", href: "/ceo", icon: Target },
-  { label: "Risk & Alerts", href: "/ceo", icon: AlertCircle },
-];
+import { ceoNav as nav } from "./ceo";
 
 const ebitda = [
   { q: "Q1'24", rev: 1480, ebitda: 312 },
