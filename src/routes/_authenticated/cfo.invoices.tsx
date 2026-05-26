@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { Receipt, LayoutDashboard, FileSpreadsheet, CheckCircle2, History, FolderOpen, RefreshCw, Loader2, BarChart3, FileUp, ScanLine, FileCheck2, FileText } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Receipt, LayoutDashboard, FileSpreadsheet, CheckCircle2, History, FolderOpen, RefreshCw, Loader2, BarChart3, FileUp, FileCheck2, FileText, Check, AlertTriangle, Radio, Pause } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { useServerFn } from "@tanstack/react-start";
 import { extractInvoice } from "@/lib/invoice-extract.functions";
 import * as XLSX from "xlsx";
@@ -28,7 +27,7 @@ type Kind = "client_issued" | "client_billing" | "vendor_received";
 type Row = {
   id: string;
   filename: string;
-  status: "queued" | "scanning" | "extracted" | "error";
+  status: "scanning" | "extracted" | "saved" | "error";
   error?: string;
   fields: {
     invoice_number?: string;
@@ -45,34 +44,10 @@ type Row = {
   };
 };
 
-const FOLDERS: { key: Kind; title: string; subtitle: string; defaultPath: string; accept: string; icon: any; tone: string }[] = [
-  {
-    key: "client_issued",
-    title: "Client invoices · raised by us",
-    subtitle: "Invoices our company has already raised for clients — drop the issued PDFs or point to the AR-Issued folder.",
-    defaultPath: "OneDrive · /Finance/AR/Issued/2026",
-    accept: "application/pdf,image/*",
-    icon: FileCheck2,
-    tone: "emerald",
-  },
-  {
-    key: "client_billing",
-    title: "Client billing sheets · unbilled / contracted",
-    subtitle: "For clients not yet billed — drop the billing Excel/CSV (process codes, rates, volumes). FInsightZ will line-extract per row.",
-    defaultPath: "SharePoint · /Finance/AR/Unbilled-Inputs",
-    accept: ".xlsx,.xls,.csv,application/pdf,image/*",
-    icon: FileUp,
-    tone: "gold",
-  },
-  {
-    key: "vendor_received",
-    title: "Vendor invoices · raised on us",
-    subtitle: "AP inbox — vendor PDFs and scans. AI extracts vendor, GSTIN, amount, GST, due date.",
-    defaultPath: "SharePoint · /Finance/AP/Inbox/2026",
-    accept: "application/pdf,image/*,.xlsx,.csv",
-    icon: FileText,
-    tone: "primary",
-  },
+const FOLDERS: { key: Kind; title: string; subtitle: string; hint: string; icon: any; tone: string }[] = [
+  { key: "client_issued",   title: "Client invoices · raised by us",            subtitle: "Already-issued AR PDFs.",                       hint: "e.g. OneDrive/Finance/AR/Issued/2026", icon: FileCheck2, tone: "emerald" },
+  { key: "client_billing",  title: "Client billing sheets · unbilled",          subtitle: "Billing Excels / CSV for unbilled work.",       hint: "e.g. SharePoint/Finance/AR/Unbilled",  icon: FileUp,     tone: "gold" },
+  { key: "vendor_received", title: "Vendor invoices · raised on us",            subtitle: "AP inbox PDFs and scans from vendors.",         hint: "e.g. SharePoint/Finance/AP/Inbox/2026",icon: FileText,   tone: "primary" },
 ];
 
 function fileToBase64(f: File): Promise<{ mime: string; b64: string }> {
@@ -88,7 +63,7 @@ function fileToBase64(f: File): Promise<{ mime: string; b64: string }> {
   });
 }
 
-async function parseExcelRows(f: File): Promise<Row[]> {
+async function parseExcelRows(f: File, baseId: string): Promise<Row[]> {
   const buf = await f.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
   const ws = wb.Sheets[wb.SheetNames[0]];
@@ -101,9 +76,9 @@ async function parseExcelRows(f: File): Promise<Row[]> {
     return undefined;
   };
   return rows.slice(0, 200).map((r, i) => ({
-    id: `${f.name}#${i}`,
+    id: `${baseId}#${i}`,
     filename: `${f.name} · row ${i + 1}`,
-    status: "extracted" as const,
+    status: "saved" as const,
     fields: {
       invoice_number: find(r, ["invoiceno", "billno", "invno"])?.toString(),
       invoice_date: find(r, ["date", "billdate"])?.toString(),
@@ -135,38 +110,96 @@ function statusBadge(s?: string) {
   return <Badge variant="outline" className={cls}>{s}</Badge>;
 }
 
-function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows: Row[]; setRows: (r: Row[]) => void }) {
-  const [path, setPath] = useState(cfg.defaultPath);
-  const [scanning, setScanning] = useState(false);
+function SaveMark({ row }: { row: Row }) {
+  if (row.status === "scanning")
+    return <span title="Extracting…" className="inline-flex items-center gap-1 text-muted-foreground"><Loader2 className="w-3.5 h-3.5 animate-spin" /></span>;
+  if (row.status === "error")
+    return <span title={row.error ?? "Error"} className="inline-flex w-5 h-5 rounded-full bg-destructive/15 text-destructive items-center justify-center"><AlertTriangle className="w-3.5 h-3.5" /></span>;
+  if (row.status === "saved" || row.status === "extracted")
+    return <span title="Saved" className="inline-flex w-5 h-5 rounded-full bg-success/15 text-success items-center justify-center"><Check className="w-3.5 h-3.5" /></span>;
+  return null;
+}
+
+function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows: Row[]; setRows: React.Dispatch<React.SetStateAction<Row[]>> }) {
+  const [dirHandle, setDirHandle] = useState<any>(null);
+  const [folderName, setFolderName] = useState<string>("");
+  const [watching, setWatching] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [lastScan, setLastScan] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const seenRef = useRef<Set<string>>(new Set());
   const extract = useServerFn(extractInvoice);
   const Icon = cfg.icon;
 
-  const onFiles = async (files: File[]) => {
-    if (!files.length) return;
-    setError(null); setScanning(true);
-    const initial: Row[] = files.map((f) => ({ id: `${cfg.key}-${f.name}-${f.size}-${Math.random().toString(36).slice(2, 6)}`, filename: f.name, status: "scanning" as const, fields: {} }));
-    setRows([...initial, ...rows]);
+  const supported = typeof window !== "undefined" && "showDirectoryPicker" in window;
 
-    const updated: Row[] = [...initial];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
+  const processFile = useCallback(async (f: File, key: string) => {
+    const id = `${cfg.key}-${key}`;
+    if (/\.(xlsx|xls|csv)$/i.test(f.name)) {
+      const placeholder: Row = { id, filename: f.name, status: "scanning", fields: {} };
+      setRows((prev) => [placeholder, ...prev]);
       try {
-        if (/\.(xlsx|xls|csv)$/i.test(f.name)) {
-          const extracted = await parseExcelRows(f);
-          updated.splice(i, 1, ...extracted);
-        } else {
-          const { mime, b64 } = await fileToBase64(f);
-          const out = await extract({ data: { filename: f.name, mime, dataBase64: b64, kind: cfg.key } });
-          updated[i] = { ...updated[i], status: out.ok ? "extracted" : "error", fields: out.fields ?? {}, error: out.ok ? undefined : "AI returned no fields" };
-        }
+        const extracted = await parseExcelRows(f, id);
+        setRows((prev) => [...extracted, ...prev.filter((r) => r.id !== id)]);
       } catch (e: any) {
-        updated[i] = { ...updated[i], status: "error", error: e?.message ?? "Failed" };
+        setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Parse failed" } : r)));
       }
-      setRows([...updated, ...rows]);
+      return;
     }
-    setScanning(false);
+    const placeholder: Row = { id, filename: f.name, status: "scanning", fields: {} };
+    setRows((prev) => [placeholder, ...prev]);
+    try {
+      const { mime, b64 } = await fileToBase64(f);
+      const out = await extract({ data: { filename: f.name, mime, dataBase64: b64, kind: cfg.key } });
+      setRows((prev) => prev.map((r) => r.id === id
+        ? { ...r, status: out.ok ? "saved" : "error", fields: out.fields ?? {}, error: out.ok ? undefined : "AI returned no fields" }
+        : r));
+    } catch (e: any) {
+      setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Failed" } : r)));
+    }
+  }, [cfg.key, extract, setRows]);
+
+  const scanOnce = useCallback(async (handle: any) => {
+    if (!handle) return;
+    setBusy(true); setError(null);
+    try {
+      const tasks: Promise<void>[] = [];
+      for await (const [name, entry] of handle.entries()) {
+        if (entry.kind !== "file") continue;
+        if (!/\.(pdf|png|jpe?g|webp|xlsx|xls|csv)$/i.test(name)) continue;
+        const file: File = await entry.getFile();
+        const key = `${name}::${file.size}::${file.lastModified}`;
+        if (seenRef.current.has(key)) continue;
+        seenRef.current.add(key);
+        tasks.push(processFile(file, key));
+      }
+      await Promise.all(tasks);
+      setLastScan(new Date());
+    } catch (e: any) {
+      setError(e?.message ?? "Scan failed");
+    } finally {
+      setBusy(false);
+    }
+  }, [processFile]);
+
+  // poll every 8s while watching
+  useEffect(() => {
+    if (!watching || !dirHandle) return;
+    scanOnce(dirHandle);
+    const t = setInterval(() => scanOnce(dirHandle), 8000);
+    return () => clearInterval(t);
+  }, [watching, dirHandle, scanOnce]);
+
+  const pickFolder = async () => {
+    try {
+      const h = await (window as any).showDirectoryPicker({ mode: "read" });
+      seenRef.current = new Set();
+      setDirHandle(h);
+      setFolderName(h.name);
+      setWatching(true);
+    } catch (e: any) {
+      if (e?.name !== "AbortError") setError(e?.message ?? "Could not open folder");
+    }
   };
 
   return (
@@ -182,6 +215,11 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {watching ? (
+            <Badge variant="outline" className="border-success/40 text-success gap-1"><Radio className="w-3 h-3 animate-pulse" /> Live</Badge>
+          ) : (
+            <Badge variant="outline" className="border-border text-muted-foreground gap-1"><Pause className="w-3 h-3" /> Idle</Badge>
+          )}
           <Badge variant="outline" className="border-primary/40 text-primary">{rows.length} extracted</Badge>
         </div>
       </div>
@@ -189,26 +227,40 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
       <div className="p-5 grid md:grid-cols-[1fr_auto_auto] gap-3 items-end border-b border-border/60">
         <div>
           <label className="text-[11px] uppercase tracking-widest text-muted-foreground">Monitored folder</label>
-          <Input value={path} onChange={(e) => setPath(e.target.value)} placeholder="OneDrive / SharePoint / Drive path" className="mt-1" />
+          <div className="mt-1 h-10 rounded-md border border-border/60 bg-background/40 px-3 flex items-center gap-2 text-sm">
+            <FolderOpen className="w-4 h-4 text-muted-foreground" />
+            {folderName ? (
+              <>
+                <span className="font-medium truncate">{folderName}</span>
+                {lastScan && <span className="text-[11px] text-muted-foreground ml-auto">last scan {lastScan.toLocaleTimeString()}</span>}
+              </>
+            ) : (
+              <span className="text-muted-foreground truncate">No folder linked — {cfg.hint}</span>
+            )}
+          </div>
         </div>
-        <input ref={inputRef} type="file" multiple accept={cfg.accept} className="hidden"
-          onChange={(e) => { const fs = Array.from(e.target.files ?? []); e.target.value = ""; onFiles(fs); }} />
-        <Button variant="outline" onClick={() => inputRef.current?.click()} disabled={scanning}>
-          <FolderOpen className="w-4 h-4 mr-2" /> Choose files
+        <Button variant="outline" onClick={pickFolder} disabled={!supported}>
+          <FolderOpen className="w-4 h-4 mr-2" /> {folderName ? "Change folder" : "Link folder"}
         </Button>
-        <Button onClick={() => inputRef.current?.click()} disabled={scanning}
+        <Button onClick={() => setWatching((v) => !v)} disabled={!dirHandle}
           className="bg-[var(--gradient-emerald)] text-primary-foreground shadow-glow">
-          {scanning ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ScanLine className="w-4 h-4 mr-2" />}
-          Scan new files
+          {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : watching ? <Pause className="w-4 h-4 mr-2" /> : <Radio className="w-4 h-4 mr-2" />}
+          {watching ? "Pause monitoring" : "Start monitoring"}
         </Button>
       </div>
 
+      {!supported && (
+        <div className="mx-5 my-3 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+          Folder monitoring requires a Chromium-based browser (Chrome, Edge, Brave). Safari/Firefox don't yet expose the File System Access API.
+        </div>
+      )}
       {error && <div className="mx-5 my-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">{error}</div>}
 
       <div className="overflow-auto max-h-[420px]">
         <table className="w-full text-xs">
           <thead className="sticky top-0 bg-card z-10">
             <tr className="text-left text-[10px] uppercase tracking-widest text-muted-foreground border-b border-border/60">
+              <th className="px-4 py-2 w-8"></th>
               <th className="px-4 py-2">File / Source</th>
               <th className="px-3 py-2">Invoice #</th>
               <th className="px-3 py-2">Date</th>
@@ -222,14 +274,15 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
           </thead>
           <tbody className="divide-y divide-border/40">
             {rows.length === 0 ? (
-              <tr><td colSpan={9} className="px-4 py-10 text-center text-muted-foreground">
-                No invoices ingested yet — choose files above to let AI extract them.
+              <tr><td colSpan={10} className="px-4 py-10 text-center text-muted-foreground">
+                {dirHandle ? "Watching folder — drop new files into it and they'll appear here." : "Link a folder above. FInsightZ will continuously watch it and auto-extract new invoices."}
               </td></tr>
             ) : rows.map((r) => (
               <tr key={r.id} className="hover:bg-card/30">
+                <td className="px-4 py-2"><SaveMark row={r} /></td>
                 <td className="px-4 py-2 max-w-[260px] truncate">
                   <div className="truncate">{r.filename}</div>
-                  {r.status === "scanning" && <div className="text-[10px] text-muted-foreground flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> AI extracting…</div>}
+                  {r.status === "scanning" && <div className="text-[10px] text-muted-foreground">AI extracting…</div>}
                   {r.status === "error" && <div className="text-[10px] text-destructive">{r.error}</div>}
                 </td>
                 <td className="px-3 py-2 font-mono">{r.fields.invoice_number ?? "—"}</td>
@@ -262,7 +315,7 @@ function CFOInvoices() {
         <PageHeader
           eyebrow="CFO · Invoices"
           title="Invoice Intelligence"
-          subtitle="Point FInsightZ at your client-issued, client-billing and vendor folders. AI scans new files and extracts fields into three live tables."
+          subtitle="Link each folder once. FInsightZ continuously watches for new files and extracts them — a green tick means saved, a red ! means it needs attention."
           actions={
             <Button variant="outline" onClick={() => { setIssued([]); setBilling([]); setVendor([]); }}>
               <RefreshCw className="w-4 h-4 mr-2" /> Reset
