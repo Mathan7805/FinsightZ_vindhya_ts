@@ -24,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/cfo/")({
 const nav = [
   { label: "Overview", href: "/cfo", icon: LayoutDashboard },
   { label: "P&L Review", href: "/cfo/pnl", icon: FileSpreadsheet },
+  { label: "Profitability", href: "/cfo/profitability", icon: BarChart3 },
   { label: "Invoices", href: "/cfo/invoices", icon: Receipt },
   { label: "Approvals", href: "/cfo/approvals", icon: CheckCircle2 },
   { label: "Audit Log", href: "/cfo/audit", icon: History },
