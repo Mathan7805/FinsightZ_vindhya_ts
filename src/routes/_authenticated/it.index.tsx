@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/it")({
+export const Route = createFileRoute("/_authenticated/it/")({
   head: () => ({ meta: [{ title: "IT Head Dashboard — FInsightZ" }] }),
   component: ITDashboard,
 });

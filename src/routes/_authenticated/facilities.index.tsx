@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/facilities")({
+export const Route = createFileRoute("/_authenticated/facilities/")({
   head: () => ({ meta: [{ title: "Facilities Dashboard — FInsightZ" }] }),
   component: FacilitiesDashboard,
 });

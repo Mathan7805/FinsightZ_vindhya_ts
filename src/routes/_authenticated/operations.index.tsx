@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/operations")({
+export const Route = createFileRoute("/_authenticated/operations/")({
   head: () => ({ meta: [{ title: "Operations Dashboard — FInsightZ" }] }),
   component: OpsDashboard,
 });

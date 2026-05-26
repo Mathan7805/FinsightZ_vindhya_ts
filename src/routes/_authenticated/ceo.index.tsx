@@ -7,7 +7,7 @@ import {
   ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/ceo")({
+export const Route = createFileRoute("/_authenticated/ceo/")({
   head: () => ({ meta: [{ title: "CEO / CXO Dashboard — FInsightZ" }] }),
   component: CEODashboard,
 });
