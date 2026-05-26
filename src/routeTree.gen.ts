@@ -17,6 +17,7 @@ import { Route as AuthenticatedItRouteImport } from './routes/_authenticated/it'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedFacilitiesRouteImport } from './routes/_authenticated/facilities'
 import { Route as AuthenticatedCfoRouteImport } from './routes/_authenticated/cfo'
+import { Route as AuthenticatedCeoRouteImport } from './routes/_authenticated/ceo'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -57,10 +58,16 @@ const AuthenticatedCfoRoute = AuthenticatedCfoRouteImport.update({
   path: '/cfo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCeoRoute = AuthenticatedCeoRouteImport.update({
+  id: '/ceo',
+  path: '/ceo',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ceo': typeof AuthenticatedCeoRoute
   '/cfo': typeof AuthenticatedCfoRoute
   '/facilities': typeof AuthenticatedFacilitiesRoute
   '/finance': typeof AuthenticatedFinanceRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ceo': typeof AuthenticatedCeoRoute
   '/cfo': typeof AuthenticatedCfoRoute
   '/facilities': typeof AuthenticatedFacilitiesRoute
   '/finance': typeof AuthenticatedFinanceRoute
@@ -81,6 +89,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/ceo': typeof AuthenticatedCeoRoute
   '/_authenticated/cfo': typeof AuthenticatedCfoRoute
   '/_authenticated/facilities': typeof AuthenticatedFacilitiesRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
@@ -92,6 +101,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/ceo'
     | '/cfo'
     | '/facilities'
     | '/finance'
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/ceo'
     | '/cfo'
     | '/facilities'
     | '/finance'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/_authenticated/ceo'
     | '/_authenticated/cfo'
     | '/_authenticated/facilities'
     | '/_authenticated/finance'
@@ -182,10 +194,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCfoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/ceo': {
+      id: '/_authenticated/ceo'
+      path: '/ceo'
+      fullPath: '/ceo'
+      preLoaderRoute: typeof AuthenticatedCeoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCeoRoute: typeof AuthenticatedCeoRoute
   AuthenticatedCfoRoute: typeof AuthenticatedCfoRoute
   AuthenticatedFacilitiesRoute: typeof AuthenticatedFacilitiesRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
@@ -194,6 +214,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCeoRoute: AuthenticatedCeoRoute,
   AuthenticatedCfoRoute: AuthenticatedCfoRoute,
   AuthenticatedFacilitiesRoute: AuthenticatedFacilitiesRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
@@ -213,3 +234,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
