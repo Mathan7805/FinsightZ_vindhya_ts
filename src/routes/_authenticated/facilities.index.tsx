@@ -14,12 +14,12 @@ export const Route = createFileRoute("/_authenticated/facilities/")({
 import { facNav as nav } from "./facilities";
 
 const power = [
-  { m: "Jun", kwh: 142 },
-  { m: "Jul", kwh: 158 },
-  { m: "Aug", kwh: 164 },
-  { m: "Sep", kwh: 151 },
-  { m: "Oct", kwh: 148 },
-  { m: "Nov", kwh: 139 },
+  { m: "Jun", cost: 4.92 },
+  { m: "Jul", cost: 5.41 },
+  { m: "Aug", cost: 5.62 },
+  { m: "Sep", cost: 5.18 },
+  { m: "Oct", cost: 5.04 },
+  { m: "Nov", cost: 4.71 },
 ];
 
 function FacilitiesDashboard() {
@@ -39,10 +39,11 @@ function FacilitiesDashboard() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatCard label="Monthly Facility Spend" value="₹21.4M" delta="-3.2% MoM" accent="emerald" />
-          <StatCard label="Active Buildings" value="6" delta="2 cities" />
-          <StatCard label="Electricity (kWh)" value="139K" delta="-6% YoY" accent="gold" />
-          <StatCard label="Open Maintenance" value="14" delta="3 high priority" />
+          <StatCard label="Cost per Sqft / mo" value="₹107" delta="-₹4 MoM" accent="gold" />
+          <StatCard label="Rent + Utilities" value="₹18.3M" delta="85% of facility spend" />
+          <StatCard label="Active Buildings" value="6" delta="2 cities · 2.0L sqft" />
         </div>
+
 
         <div className="mb-8">
           <UploadCenter persona="facilities" title="Facilities Upload & AI Reader"
@@ -51,8 +52,8 @@ function FacilitiesDashboard() {
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
-            <h3 className="font-display font-semibold text-lg mb-1">Electricity Consumption</h3>
-            <p className="text-xs text-muted-foreground mb-4">Trailing 6 months · '000 kWh</p>
+            <h3 className="font-display font-semibold text-lg mb-1">Electricity Spend Trend</h3>
+            <p className="text-xs text-muted-foreground mb-4">Trailing 6 months · ₹ Million</p>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={power}>
                 <defs>
@@ -65,10 +66,11 @@ function FacilitiesDashboard() {
                 <XAxis dataKey="m" stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
-                <Area type="monotone" dataKey="kwh" stroke="oklch(0.78 0.13 85)" fill="url(#pow)" strokeWidth={2} />
+                <Area type="monotone" dataKey="cost" stroke="oklch(0.78 0.13 85)" fill="url(#pow)" strokeWidth={2} name="₹ M" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
+
 
           <div className="glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-4">Buildings</h3>
