@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Server, Monitor, Cloud, Upload, Cpu, HardDrive } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
