@@ -15,8 +15,8 @@ import { opsNav as nav } from "./operations";
 
 const trend = Array.from({ length: 14 }, (_, i) => ({
   d: `D${i + 1}`,
-  aht: 320 + Math.round(Math.sin(i / 2) * 40 + Math.random() * 20),
-  sla: 88 + Math.round(Math.cos(i / 2) * 5 + Math.random() * 3),
+  revPerFte: 4200 + Math.round(Math.sin(i / 2) * 180 + Math.random() * 80),
+  costPerFte: 2680 + Math.round(Math.cos(i / 2) * 90 + Math.random() * 40),
 }));
 
 function OpsDashboard() {
