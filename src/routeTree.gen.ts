@@ -18,6 +18,8 @@ import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedFacilitiesRouteImport } from './routes/_authenticated/facilities'
 import { Route as AuthenticatedCfoRouteImport } from './routes/_authenticated/cfo'
 import { Route as AuthenticatedCeoRouteImport } from './routes/_authenticated/ceo'
+import { Route as AuthenticatedFinanceIndexRouteImport } from './routes/_authenticated/finance.index'
+import { Route as AuthenticatedCfoIndexRouteImport } from './routes/_authenticated/cfo.index'
 import { Route as AuthenticatedFinanceValidationRouteImport } from './routes/_authenticated/finance.validation'
 import { Route as AuthenticatedFinanceReconciliationRouteImport } from './routes/_authenticated/finance.reconciliation'
 import { Route as AuthenticatedFinanceMastersRouteImport } from './routes/_authenticated/finance.masters'
@@ -70,6 +72,17 @@ const AuthenticatedCeoRoute = AuthenticatedCeoRouteImport.update({
   id: '/ceo',
   path: '/ceo',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFinanceIndexRoute =
+  AuthenticatedFinanceIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedFinanceRoute,
+  } as any)
+const AuthenticatedCfoIndexRoute = AuthenticatedCfoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCfoRoute,
 } as any)
 const AuthenticatedFinanceValidationRoute =
   AuthenticatedFinanceValidationRouteImport.update({
@@ -135,14 +148,14 @@ export interface FileRoutesByFullPath {
   '/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/cfo/': typeof AuthenticatedCfoIndexRoute
+  '/finance/': typeof AuthenticatedFinanceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/ceo': typeof AuthenticatedCeoRoute
-  '/cfo': typeof AuthenticatedCfoRouteWithChildren
   '/facilities': typeof AuthenticatedFacilitiesRoute
-  '/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/it': typeof AuthenticatedItRoute
   '/operations': typeof AuthenticatedOperationsRoute
   '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
@@ -153,6 +166,8 @@ export interface FileRoutesByTo {
   '/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/cfo': typeof AuthenticatedCfoIndexRoute
+  '/finance': typeof AuthenticatedFinanceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,6 +188,8 @@ export interface FileRoutesById {
   '/_authenticated/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/_authenticated/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/_authenticated/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/_authenticated/cfo/': typeof AuthenticatedCfoIndexRoute
+  '/_authenticated/finance/': typeof AuthenticatedFinanceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -193,14 +210,14 @@ export interface FileRouteTypes {
     | '/finance/masters'
     | '/finance/reconciliation'
     | '/finance/validation'
+    | '/cfo/'
+    | '/finance/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/ceo'
-    | '/cfo'
     | '/facilities'
-    | '/finance'
     | '/it'
     | '/operations'
     | '/cfo/approvals'
@@ -211,6 +228,8 @@ export interface FileRouteTypes {
     | '/finance/masters'
     | '/finance/reconciliation'
     | '/finance/validation'
+    | '/cfo'
+    | '/finance'
   id:
     | '__root__'
     | '/'
@@ -230,6 +249,8 @@ export interface FileRouteTypes {
     | '/_authenticated/finance/masters'
     | '/_authenticated/finance/reconciliation'
     | '/_authenticated/finance/validation'
+    | '/_authenticated/cfo/'
+    | '/_authenticated/finance/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -303,6 +324,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCeoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/finance/': {
+      id: '/_authenticated/finance/'
+      path: '/'
+      fullPath: '/finance/'
+      preLoaderRoute: typeof AuthenticatedFinanceIndexRouteImport
+      parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/cfo/': {
+      id: '/_authenticated/cfo/'
+      path: '/'
+      fullPath: '/cfo/'
+      preLoaderRoute: typeof AuthenticatedCfoIndexRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
     '/_authenticated/finance/validation': {
       id: '/_authenticated/finance/validation'
       path: '/validation'
@@ -367,6 +402,7 @@ interface AuthenticatedCfoRouteChildren {
   AuthenticatedCfoAuditRoute: typeof AuthenticatedCfoAuditRoute
   AuthenticatedCfoInvoicesRoute: typeof AuthenticatedCfoInvoicesRoute
   AuthenticatedCfoPnlRoute: typeof AuthenticatedCfoPnlRoute
+  AuthenticatedCfoIndexRoute: typeof AuthenticatedCfoIndexRoute
 }
 
 const AuthenticatedCfoRouteChildren: AuthenticatedCfoRouteChildren = {
@@ -374,6 +410,7 @@ const AuthenticatedCfoRouteChildren: AuthenticatedCfoRouteChildren = {
   AuthenticatedCfoAuditRoute: AuthenticatedCfoAuditRoute,
   AuthenticatedCfoInvoicesRoute: AuthenticatedCfoInvoicesRoute,
   AuthenticatedCfoPnlRoute: AuthenticatedCfoPnlRoute,
+  AuthenticatedCfoIndexRoute: AuthenticatedCfoIndexRoute,
 }
 
 const AuthenticatedCfoRouteWithChildren =
@@ -384,6 +421,7 @@ interface AuthenticatedFinanceRouteChildren {
   AuthenticatedFinanceMastersRoute: typeof AuthenticatedFinanceMastersRoute
   AuthenticatedFinanceReconciliationRoute: typeof AuthenticatedFinanceReconciliationRoute
   AuthenticatedFinanceValidationRoute: typeof AuthenticatedFinanceValidationRoute
+  AuthenticatedFinanceIndexRoute: typeof AuthenticatedFinanceIndexRoute
 }
 
 const AuthenticatedFinanceRouteChildren: AuthenticatedFinanceRouteChildren = {
@@ -392,6 +430,7 @@ const AuthenticatedFinanceRouteChildren: AuthenticatedFinanceRouteChildren = {
   AuthenticatedFinanceReconciliationRoute:
     AuthenticatedFinanceReconciliationRoute,
   AuthenticatedFinanceValidationRoute: AuthenticatedFinanceValidationRoute,
+  AuthenticatedFinanceIndexRoute: AuthenticatedFinanceIndexRoute,
 }
 
 const AuthenticatedFinanceRouteWithChildren =
