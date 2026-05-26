@@ -17,9 +17,9 @@ function OpsUpload() {
           title="Upload Center"
           subtitle="Push process metrics, headcount sheets, and SLA reports for AI extraction."
         />
-        <UploadCenter
+        <UploadCenter persona="operations"
           title="Operations Data Upload"
-          description="Drop Excel/CSV files containing process metrics, headcount, or SLA data."
+          subtitle="Drop Excel/CSV files containing process metrics, headcount, or SLA data."
           accept=".xlsx,.xls,.csv"
         />
       </div>

@@ -17,9 +17,9 @@ function FacUpload() {
           title="Upload Expenses"
           subtitle="Upload utility bills, vendor invoices, and maintenance receipts for AI categorization."
         />
-        <UploadCenter
+        <UploadCenter persona="facilities"
           title="Facilities Expense Upload"
-          description="Drop utility bills, maintenance invoices, or facilities expense sheets."
+          subtitle="Drop utility bills, maintenance invoices, or facilities expense sheets."
           accept=".xlsx,.xls,.csv,.pdf"
         />
       </div>

@@ -24,14 +24,30 @@ import { Route as AuthenticatedFinanceIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedFacilitiesIndexRouteImport } from './routes/_authenticated/facilities.index'
 import { Route as AuthenticatedCfoIndexRouteImport } from './routes/_authenticated/cfo.index'
 import { Route as AuthenticatedCeoIndexRouteImport } from './routes/_authenticated/ceo.index'
+import { Route as AuthenticatedOperationsUploadRouteImport } from './routes/_authenticated/operations.upload'
+import { Route as AuthenticatedOperationsSlaRouteImport } from './routes/_authenticated/operations.sla'
+import { Route as AuthenticatedOperationsPerformanceRouteImport } from './routes/_authenticated/operations.performance'
+import { Route as AuthenticatedOperationsHeadcountRouteImport } from './routes/_authenticated/operations.headcount'
+import { Route as AuthenticatedItSoftwareRouteImport } from './routes/_authenticated/it.software'
+import { Route as AuthenticatedItSeatsRouteImport } from './routes/_authenticated/it.seats'
+import { Route as AuthenticatedItHealthRouteImport } from './routes/_authenticated/it.health'
+import { Route as AuthenticatedItDevicesRouteImport } from './routes/_authenticated/it.devices'
 import { Route as AuthenticatedFinanceValidationRouteImport } from './routes/_authenticated/finance.validation'
 import { Route as AuthenticatedFinanceReconciliationRouteImport } from './routes/_authenticated/finance.reconciliation'
 import { Route as AuthenticatedFinanceMastersRouteImport } from './routes/_authenticated/finance.masters'
 import { Route as AuthenticatedFinanceInvoicesRouteImport } from './routes/_authenticated/finance.invoices'
+import { Route as AuthenticatedFacilitiesWaterRouteImport } from './routes/_authenticated/facilities.water'
+import { Route as AuthenticatedFacilitiesUtilitiesRouteImport } from './routes/_authenticated/facilities.utilities'
+import { Route as AuthenticatedFacilitiesUploadRouteImport } from './routes/_authenticated/facilities.upload'
+import { Route as AuthenticatedFacilitiesMaintenanceRouteImport } from './routes/_authenticated/facilities.maintenance'
 import { Route as AuthenticatedCfoPnlRouteImport } from './routes/_authenticated/cfo.pnl'
 import { Route as AuthenticatedCfoInvoicesRouteImport } from './routes/_authenticated/cfo.invoices'
 import { Route as AuthenticatedCfoAuditRouteImport } from './routes/_authenticated/cfo.audit'
 import { Route as AuthenticatedCfoApprovalsRouteImport } from './routes/_authenticated/cfo.approvals'
+import { Route as AuthenticatedCeoUnitsRouteImport } from './routes/_authenticated/ceo.units'
+import { Route as AuthenticatedCeoRiskRouteImport } from './routes/_authenticated/ceo.risk'
+import { Route as AuthenticatedCeoKpisRouteImport } from './routes/_authenticated/ceo.kpis'
+import { Route as AuthenticatedCeoGeographyRouteImport } from './routes/_authenticated/ceo.geography'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -110,6 +126,50 @@ const AuthenticatedCeoIndexRoute = AuthenticatedCeoIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedCeoRoute,
 } as any)
+const AuthenticatedOperationsUploadRoute =
+  AuthenticatedOperationsUploadRouteImport.update({
+    id: '/upload',
+    path: '/upload',
+    getParentRoute: () => AuthenticatedOperationsRoute,
+  } as any)
+const AuthenticatedOperationsSlaRoute =
+  AuthenticatedOperationsSlaRouteImport.update({
+    id: '/sla',
+    path: '/sla',
+    getParentRoute: () => AuthenticatedOperationsRoute,
+  } as any)
+const AuthenticatedOperationsPerformanceRoute =
+  AuthenticatedOperationsPerformanceRouteImport.update({
+    id: '/performance',
+    path: '/performance',
+    getParentRoute: () => AuthenticatedOperationsRoute,
+  } as any)
+const AuthenticatedOperationsHeadcountRoute =
+  AuthenticatedOperationsHeadcountRouteImport.update({
+    id: '/headcount',
+    path: '/headcount',
+    getParentRoute: () => AuthenticatedOperationsRoute,
+  } as any)
+const AuthenticatedItSoftwareRoute = AuthenticatedItSoftwareRouteImport.update({
+  id: '/software',
+  path: '/software',
+  getParentRoute: () => AuthenticatedItRoute,
+} as any)
+const AuthenticatedItSeatsRoute = AuthenticatedItSeatsRouteImport.update({
+  id: '/seats',
+  path: '/seats',
+  getParentRoute: () => AuthenticatedItRoute,
+} as any)
+const AuthenticatedItHealthRoute = AuthenticatedItHealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => AuthenticatedItRoute,
+} as any)
+const AuthenticatedItDevicesRoute = AuthenticatedItDevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => AuthenticatedItRoute,
+} as any)
 const AuthenticatedFinanceValidationRoute =
   AuthenticatedFinanceValidationRouteImport.update({
     id: '/validation',
@@ -134,6 +194,30 @@ const AuthenticatedFinanceInvoicesRoute =
     path: '/invoices',
     getParentRoute: () => AuthenticatedFinanceRoute,
   } as any)
+const AuthenticatedFacilitiesWaterRoute =
+  AuthenticatedFacilitiesWaterRouteImport.update({
+    id: '/water',
+    path: '/water',
+    getParentRoute: () => AuthenticatedFacilitiesRoute,
+  } as any)
+const AuthenticatedFacilitiesUtilitiesRoute =
+  AuthenticatedFacilitiesUtilitiesRouteImport.update({
+    id: '/utilities',
+    path: '/utilities',
+    getParentRoute: () => AuthenticatedFacilitiesRoute,
+  } as any)
+const AuthenticatedFacilitiesUploadRoute =
+  AuthenticatedFacilitiesUploadRouteImport.update({
+    id: '/upload',
+    path: '/upload',
+    getParentRoute: () => AuthenticatedFacilitiesRoute,
+  } as any)
+const AuthenticatedFacilitiesMaintenanceRoute =
+  AuthenticatedFacilitiesMaintenanceRouteImport.update({
+    id: '/maintenance',
+    path: '/maintenance',
+    getParentRoute: () => AuthenticatedFacilitiesRoute,
+  } as any)
 const AuthenticatedCfoPnlRoute = AuthenticatedCfoPnlRouteImport.update({
   id: '/pnl',
   path: '/pnl',
@@ -156,6 +240,27 @@ const AuthenticatedCfoApprovalsRoute =
     path: '/approvals',
     getParentRoute: () => AuthenticatedCfoRoute,
   } as any)
+const AuthenticatedCeoUnitsRoute = AuthenticatedCeoUnitsRouteImport.update({
+  id: '/units',
+  path: '/units',
+  getParentRoute: () => AuthenticatedCeoRoute,
+} as any)
+const AuthenticatedCeoRiskRoute = AuthenticatedCeoRiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => AuthenticatedCeoRoute,
+} as any)
+const AuthenticatedCeoKpisRoute = AuthenticatedCeoKpisRouteImport.update({
+  id: '/kpis',
+  path: '/kpis',
+  getParentRoute: () => AuthenticatedCeoRoute,
+} as any)
+const AuthenticatedCeoGeographyRoute =
+  AuthenticatedCeoGeographyRouteImport.update({
+    id: '/geography',
+    path: '/geography',
+    getParentRoute: () => AuthenticatedCeoRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -166,14 +271,30 @@ export interface FileRoutesByFullPath {
   '/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/it': typeof AuthenticatedItRouteWithChildren
   '/operations': typeof AuthenticatedOperationsRouteWithChildren
+  '/ceo/geography': typeof AuthenticatedCeoGeographyRoute
+  '/ceo/kpis': typeof AuthenticatedCeoKpisRoute
+  '/ceo/risk': typeof AuthenticatedCeoRiskRoute
+  '/ceo/units': typeof AuthenticatedCeoUnitsRoute
   '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
   '/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
+  '/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
+  '/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
+  '/facilities/water': typeof AuthenticatedFacilitiesWaterRoute
   '/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
   '/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/it/devices': typeof AuthenticatedItDevicesRoute
+  '/it/health': typeof AuthenticatedItHealthRoute
+  '/it/seats': typeof AuthenticatedItSeatsRoute
+  '/it/software': typeof AuthenticatedItSoftwareRoute
+  '/operations/headcount': typeof AuthenticatedOperationsHeadcountRoute
+  '/operations/performance': typeof AuthenticatedOperationsPerformanceRoute
+  '/operations/sla': typeof AuthenticatedOperationsSlaRoute
+  '/operations/upload': typeof AuthenticatedOperationsUploadRoute
   '/ceo/': typeof AuthenticatedCeoIndexRoute
   '/cfo/': typeof AuthenticatedCfoIndexRoute
   '/facilities/': typeof AuthenticatedFacilitiesIndexRoute
@@ -184,14 +305,30 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ceo/geography': typeof AuthenticatedCeoGeographyRoute
+  '/ceo/kpis': typeof AuthenticatedCeoKpisRoute
+  '/ceo/risk': typeof AuthenticatedCeoRiskRoute
+  '/ceo/units': typeof AuthenticatedCeoUnitsRoute
   '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
   '/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
+  '/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
+  '/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
+  '/facilities/water': typeof AuthenticatedFacilitiesWaterRoute
   '/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
   '/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/it/devices': typeof AuthenticatedItDevicesRoute
+  '/it/health': typeof AuthenticatedItHealthRoute
+  '/it/seats': typeof AuthenticatedItSeatsRoute
+  '/it/software': typeof AuthenticatedItSoftwareRoute
+  '/operations/headcount': typeof AuthenticatedOperationsHeadcountRoute
+  '/operations/performance': typeof AuthenticatedOperationsPerformanceRoute
+  '/operations/sla': typeof AuthenticatedOperationsSlaRoute
+  '/operations/upload': typeof AuthenticatedOperationsUploadRoute
   '/ceo': typeof AuthenticatedCeoIndexRoute
   '/cfo': typeof AuthenticatedCfoIndexRoute
   '/facilities': typeof AuthenticatedFacilitiesIndexRoute
@@ -210,14 +347,30 @@ export interface FileRoutesById {
   '/_authenticated/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/_authenticated/it': typeof AuthenticatedItRouteWithChildren
   '/_authenticated/operations': typeof AuthenticatedOperationsRouteWithChildren
+  '/_authenticated/ceo/geography': typeof AuthenticatedCeoGeographyRoute
+  '/_authenticated/ceo/kpis': typeof AuthenticatedCeoKpisRoute
+  '/_authenticated/ceo/risk': typeof AuthenticatedCeoRiskRoute
+  '/_authenticated/ceo/units': typeof AuthenticatedCeoUnitsRoute
   '/_authenticated/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
   '/_authenticated/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/_authenticated/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/_authenticated/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/_authenticated/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
+  '/_authenticated/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
+  '/_authenticated/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
+  '/_authenticated/facilities/water': typeof AuthenticatedFacilitiesWaterRoute
   '/_authenticated/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
   '/_authenticated/finance/masters': typeof AuthenticatedFinanceMastersRoute
   '/_authenticated/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
   '/_authenticated/finance/validation': typeof AuthenticatedFinanceValidationRoute
+  '/_authenticated/it/devices': typeof AuthenticatedItDevicesRoute
+  '/_authenticated/it/health': typeof AuthenticatedItHealthRoute
+  '/_authenticated/it/seats': typeof AuthenticatedItSeatsRoute
+  '/_authenticated/it/software': typeof AuthenticatedItSoftwareRoute
+  '/_authenticated/operations/headcount': typeof AuthenticatedOperationsHeadcountRoute
+  '/_authenticated/operations/performance': typeof AuthenticatedOperationsPerformanceRoute
+  '/_authenticated/operations/sla': typeof AuthenticatedOperationsSlaRoute
+  '/_authenticated/operations/upload': typeof AuthenticatedOperationsUploadRoute
   '/_authenticated/ceo/': typeof AuthenticatedCeoIndexRoute
   '/_authenticated/cfo/': typeof AuthenticatedCfoIndexRoute
   '/_authenticated/facilities/': typeof AuthenticatedFacilitiesIndexRoute
@@ -236,14 +389,30 @@ export interface FileRouteTypes {
     | '/finance'
     | '/it'
     | '/operations'
+    | '/ceo/geography'
+    | '/ceo/kpis'
+    | '/ceo/risk'
+    | '/ceo/units'
     | '/cfo/approvals'
     | '/cfo/audit'
     | '/cfo/invoices'
     | '/cfo/pnl'
+    | '/facilities/maintenance'
+    | '/facilities/upload'
+    | '/facilities/utilities'
+    | '/facilities/water'
     | '/finance/invoices'
     | '/finance/masters'
     | '/finance/reconciliation'
     | '/finance/validation'
+    | '/it/devices'
+    | '/it/health'
+    | '/it/seats'
+    | '/it/software'
+    | '/operations/headcount'
+    | '/operations/performance'
+    | '/operations/sla'
+    | '/operations/upload'
     | '/ceo/'
     | '/cfo/'
     | '/facilities/'
@@ -254,14 +423,30 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/ceo/geography'
+    | '/ceo/kpis'
+    | '/ceo/risk'
+    | '/ceo/units'
     | '/cfo/approvals'
     | '/cfo/audit'
     | '/cfo/invoices'
     | '/cfo/pnl'
+    | '/facilities/maintenance'
+    | '/facilities/upload'
+    | '/facilities/utilities'
+    | '/facilities/water'
     | '/finance/invoices'
     | '/finance/masters'
     | '/finance/reconciliation'
     | '/finance/validation'
+    | '/it/devices'
+    | '/it/health'
+    | '/it/seats'
+    | '/it/software'
+    | '/operations/headcount'
+    | '/operations/performance'
+    | '/operations/sla'
+    | '/operations/upload'
     | '/ceo'
     | '/cfo'
     | '/facilities'
@@ -279,14 +464,30 @@ export interface FileRouteTypes {
     | '/_authenticated/finance'
     | '/_authenticated/it'
     | '/_authenticated/operations'
+    | '/_authenticated/ceo/geography'
+    | '/_authenticated/ceo/kpis'
+    | '/_authenticated/ceo/risk'
+    | '/_authenticated/ceo/units'
     | '/_authenticated/cfo/approvals'
     | '/_authenticated/cfo/audit'
     | '/_authenticated/cfo/invoices'
     | '/_authenticated/cfo/pnl'
+    | '/_authenticated/facilities/maintenance'
+    | '/_authenticated/facilities/upload'
+    | '/_authenticated/facilities/utilities'
+    | '/_authenticated/facilities/water'
     | '/_authenticated/finance/invoices'
     | '/_authenticated/finance/masters'
     | '/_authenticated/finance/reconciliation'
     | '/_authenticated/finance/validation'
+    | '/_authenticated/it/devices'
+    | '/_authenticated/it/health'
+    | '/_authenticated/it/seats'
+    | '/_authenticated/it/software'
+    | '/_authenticated/operations/headcount'
+    | '/_authenticated/operations/performance'
+    | '/_authenticated/operations/sla'
+    | '/_authenticated/operations/upload'
     | '/_authenticated/ceo/'
     | '/_authenticated/cfo/'
     | '/_authenticated/facilities/'
@@ -408,6 +609,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCeoIndexRouteImport
       parentRoute: typeof AuthenticatedCeoRoute
     }
+    '/_authenticated/operations/upload': {
+      id: '/_authenticated/operations/upload'
+      path: '/upload'
+      fullPath: '/operations/upload'
+      preLoaderRoute: typeof AuthenticatedOperationsUploadRouteImport
+      parentRoute: typeof AuthenticatedOperationsRoute
+    }
+    '/_authenticated/operations/sla': {
+      id: '/_authenticated/operations/sla'
+      path: '/sla'
+      fullPath: '/operations/sla'
+      preLoaderRoute: typeof AuthenticatedOperationsSlaRouteImport
+      parentRoute: typeof AuthenticatedOperationsRoute
+    }
+    '/_authenticated/operations/performance': {
+      id: '/_authenticated/operations/performance'
+      path: '/performance'
+      fullPath: '/operations/performance'
+      preLoaderRoute: typeof AuthenticatedOperationsPerformanceRouteImport
+      parentRoute: typeof AuthenticatedOperationsRoute
+    }
+    '/_authenticated/operations/headcount': {
+      id: '/_authenticated/operations/headcount'
+      path: '/headcount'
+      fullPath: '/operations/headcount'
+      preLoaderRoute: typeof AuthenticatedOperationsHeadcountRouteImport
+      parentRoute: typeof AuthenticatedOperationsRoute
+    }
+    '/_authenticated/it/software': {
+      id: '/_authenticated/it/software'
+      path: '/software'
+      fullPath: '/it/software'
+      preLoaderRoute: typeof AuthenticatedItSoftwareRouteImport
+      parentRoute: typeof AuthenticatedItRoute
+    }
+    '/_authenticated/it/seats': {
+      id: '/_authenticated/it/seats'
+      path: '/seats'
+      fullPath: '/it/seats'
+      preLoaderRoute: typeof AuthenticatedItSeatsRouteImport
+      parentRoute: typeof AuthenticatedItRoute
+    }
+    '/_authenticated/it/health': {
+      id: '/_authenticated/it/health'
+      path: '/health'
+      fullPath: '/it/health'
+      preLoaderRoute: typeof AuthenticatedItHealthRouteImport
+      parentRoute: typeof AuthenticatedItRoute
+    }
+    '/_authenticated/it/devices': {
+      id: '/_authenticated/it/devices'
+      path: '/devices'
+      fullPath: '/it/devices'
+      preLoaderRoute: typeof AuthenticatedItDevicesRouteImport
+      parentRoute: typeof AuthenticatedItRoute
+    }
     '/_authenticated/finance/validation': {
       id: '/_authenticated/finance/validation'
       path: '/validation'
@@ -435,6 +692,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/finance/invoices'
       preLoaderRoute: typeof AuthenticatedFinanceInvoicesRouteImport
       parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/facilities/water': {
+      id: '/_authenticated/facilities/water'
+      path: '/water'
+      fullPath: '/facilities/water'
+      preLoaderRoute: typeof AuthenticatedFacilitiesWaterRouteImport
+      parentRoute: typeof AuthenticatedFacilitiesRoute
+    }
+    '/_authenticated/facilities/utilities': {
+      id: '/_authenticated/facilities/utilities'
+      path: '/utilities'
+      fullPath: '/facilities/utilities'
+      preLoaderRoute: typeof AuthenticatedFacilitiesUtilitiesRouteImport
+      parentRoute: typeof AuthenticatedFacilitiesRoute
+    }
+    '/_authenticated/facilities/upload': {
+      id: '/_authenticated/facilities/upload'
+      path: '/upload'
+      fullPath: '/facilities/upload'
+      preLoaderRoute: typeof AuthenticatedFacilitiesUploadRouteImport
+      parentRoute: typeof AuthenticatedFacilitiesRoute
+    }
+    '/_authenticated/facilities/maintenance': {
+      id: '/_authenticated/facilities/maintenance'
+      path: '/maintenance'
+      fullPath: '/facilities/maintenance'
+      preLoaderRoute: typeof AuthenticatedFacilitiesMaintenanceRouteImport
+      parentRoute: typeof AuthenticatedFacilitiesRoute
     }
     '/_authenticated/cfo/pnl': {
       id: '/_authenticated/cfo/pnl'
@@ -464,14 +749,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCfoApprovalsRouteImport
       parentRoute: typeof AuthenticatedCfoRoute
     }
+    '/_authenticated/ceo/units': {
+      id: '/_authenticated/ceo/units'
+      path: '/units'
+      fullPath: '/ceo/units'
+      preLoaderRoute: typeof AuthenticatedCeoUnitsRouteImport
+      parentRoute: typeof AuthenticatedCeoRoute
+    }
+    '/_authenticated/ceo/risk': {
+      id: '/_authenticated/ceo/risk'
+      path: '/risk'
+      fullPath: '/ceo/risk'
+      preLoaderRoute: typeof AuthenticatedCeoRiskRouteImport
+      parentRoute: typeof AuthenticatedCeoRoute
+    }
+    '/_authenticated/ceo/kpis': {
+      id: '/_authenticated/ceo/kpis'
+      path: '/kpis'
+      fullPath: '/ceo/kpis'
+      preLoaderRoute: typeof AuthenticatedCeoKpisRouteImport
+      parentRoute: typeof AuthenticatedCeoRoute
+    }
+    '/_authenticated/ceo/geography': {
+      id: '/_authenticated/ceo/geography'
+      path: '/geography'
+      fullPath: '/ceo/geography'
+      preLoaderRoute: typeof AuthenticatedCeoGeographyRouteImport
+      parentRoute: typeof AuthenticatedCeoRoute
+    }
   }
 }
 
 interface AuthenticatedCeoRouteChildren {
+  AuthenticatedCeoGeographyRoute: typeof AuthenticatedCeoGeographyRoute
+  AuthenticatedCeoKpisRoute: typeof AuthenticatedCeoKpisRoute
+  AuthenticatedCeoRiskRoute: typeof AuthenticatedCeoRiskRoute
+  AuthenticatedCeoUnitsRoute: typeof AuthenticatedCeoUnitsRoute
   AuthenticatedCeoIndexRoute: typeof AuthenticatedCeoIndexRoute
 }
 
 const AuthenticatedCeoRouteChildren: AuthenticatedCeoRouteChildren = {
+  AuthenticatedCeoGeographyRoute: AuthenticatedCeoGeographyRoute,
+  AuthenticatedCeoKpisRoute: AuthenticatedCeoKpisRoute,
+  AuthenticatedCeoRiskRoute: AuthenticatedCeoRiskRoute,
+  AuthenticatedCeoUnitsRoute: AuthenticatedCeoUnitsRoute,
   AuthenticatedCeoIndexRoute: AuthenticatedCeoIndexRoute,
 }
 
@@ -498,11 +819,21 @@ const AuthenticatedCfoRouteWithChildren =
   AuthenticatedCfoRoute._addFileChildren(AuthenticatedCfoRouteChildren)
 
 interface AuthenticatedFacilitiesRouteChildren {
+  AuthenticatedFacilitiesMaintenanceRoute: typeof AuthenticatedFacilitiesMaintenanceRoute
+  AuthenticatedFacilitiesUploadRoute: typeof AuthenticatedFacilitiesUploadRoute
+  AuthenticatedFacilitiesUtilitiesRoute: typeof AuthenticatedFacilitiesUtilitiesRoute
+  AuthenticatedFacilitiesWaterRoute: typeof AuthenticatedFacilitiesWaterRoute
   AuthenticatedFacilitiesIndexRoute: typeof AuthenticatedFacilitiesIndexRoute
 }
 
 const AuthenticatedFacilitiesRouteChildren: AuthenticatedFacilitiesRouteChildren =
   {
+    AuthenticatedFacilitiesMaintenanceRoute:
+      AuthenticatedFacilitiesMaintenanceRoute,
+    AuthenticatedFacilitiesUploadRoute: AuthenticatedFacilitiesUploadRoute,
+    AuthenticatedFacilitiesUtilitiesRoute:
+      AuthenticatedFacilitiesUtilitiesRoute,
+    AuthenticatedFacilitiesWaterRoute: AuthenticatedFacilitiesWaterRoute,
     AuthenticatedFacilitiesIndexRoute: AuthenticatedFacilitiesIndexRoute,
   }
 
@@ -532,10 +863,18 @@ const AuthenticatedFinanceRouteWithChildren =
   AuthenticatedFinanceRoute._addFileChildren(AuthenticatedFinanceRouteChildren)
 
 interface AuthenticatedItRouteChildren {
+  AuthenticatedItDevicesRoute: typeof AuthenticatedItDevicesRoute
+  AuthenticatedItHealthRoute: typeof AuthenticatedItHealthRoute
+  AuthenticatedItSeatsRoute: typeof AuthenticatedItSeatsRoute
+  AuthenticatedItSoftwareRoute: typeof AuthenticatedItSoftwareRoute
   AuthenticatedItIndexRoute: typeof AuthenticatedItIndexRoute
 }
 
 const AuthenticatedItRouteChildren: AuthenticatedItRouteChildren = {
+  AuthenticatedItDevicesRoute: AuthenticatedItDevicesRoute,
+  AuthenticatedItHealthRoute: AuthenticatedItHealthRoute,
+  AuthenticatedItSeatsRoute: AuthenticatedItSeatsRoute,
+  AuthenticatedItSoftwareRoute: AuthenticatedItSoftwareRoute,
   AuthenticatedItIndexRoute: AuthenticatedItIndexRoute,
 }
 
@@ -544,11 +883,21 @@ const AuthenticatedItRouteWithChildren = AuthenticatedItRoute._addFileChildren(
 )
 
 interface AuthenticatedOperationsRouteChildren {
+  AuthenticatedOperationsHeadcountRoute: typeof AuthenticatedOperationsHeadcountRoute
+  AuthenticatedOperationsPerformanceRoute: typeof AuthenticatedOperationsPerformanceRoute
+  AuthenticatedOperationsSlaRoute: typeof AuthenticatedOperationsSlaRoute
+  AuthenticatedOperationsUploadRoute: typeof AuthenticatedOperationsUploadRoute
   AuthenticatedOperationsIndexRoute: typeof AuthenticatedOperationsIndexRoute
 }
 
 const AuthenticatedOperationsRouteChildren: AuthenticatedOperationsRouteChildren =
   {
+    AuthenticatedOperationsHeadcountRoute:
+      AuthenticatedOperationsHeadcountRoute,
+    AuthenticatedOperationsPerformanceRoute:
+      AuthenticatedOperationsPerformanceRoute,
+    AuthenticatedOperationsSlaRoute: AuthenticatedOperationsSlaRoute,
+    AuthenticatedOperationsUploadRoute: AuthenticatedOperationsUploadRoute,
     AuthenticatedOperationsIndexRoute: AuthenticatedOperationsIndexRoute,
   }
 
