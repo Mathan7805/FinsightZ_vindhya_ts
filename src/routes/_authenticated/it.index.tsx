@@ -13,12 +13,12 @@ export const Route = createFileRoute("/_authenticated/it/")({
 
 import { itNav as nav } from "./it";
 
-const utilization = [
-  { p: "Voice", seat: 92, sys: 78 },
-  { p: "Back Off.", seat: 81, sys: 64 },
-  { p: "Coll.", seat: 88, sys: 71 },
-  { p: "Tech", seat: 95, sys: 86 },
-  { p: "Chat", seat: 76, sys: 58 },
+const itSpend = [
+  { p: "Voice", cost: 8.4, rev: 142 },
+  { p: "Back Off.", cost: 6.1, rev: 98 },
+  { p: "Coll.", cost: 5.2, rev: 84 },
+  { p: "Tech", cost: 9.8, rev: 168 },
+  { p: "Chat", cost: 3.4, rev: 52 },
 ];
 
 function ITDashboard() {
