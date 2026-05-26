@@ -12,8 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedOperationsRouteImport } from './routes/_authenticated/operations'
+import { Route as AuthenticatedItRouteImport } from './routes/_authenticated/it'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
+import { Route as AuthenticatedFacilitiesRouteImport } from './routes/_authenticated/facilities'
 import { Route as AuthenticatedCfoRouteImport } from './routes/_authenticated/cfo'
+import { Route as AuthenticatedCeoRouteImport } from './routes/_authenticated/ceo'
 import { Route as AuthenticatedOperationsIndexRouteImport } from './routes/_authenticated/operations.index'
 import { Route as AuthenticatedItIndexRouteImport } from './routes/_authenticated/it.index'
 import { Route as AuthenticatedFinanceIndexRouteImport } from './routes/_authenticated/finance.index'
@@ -43,9 +47,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedOperationsRoute = AuthenticatedOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedItRoute = AuthenticatedItRouteImport.update({
+  id: '/it',
+  path: '/it',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
   id: '/finance',
   path: '/finance',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFacilitiesRoute = AuthenticatedFacilitiesRouteImport.update({
+  id: '/facilities',
+  path: '/facilities',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedCfoRoute = AuthenticatedCfoRouteImport.update({
@@ -53,16 +72,21 @@ const AuthenticatedCfoRoute = AuthenticatedCfoRouteImport.update({
   path: '/cfo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCeoRoute = AuthenticatedCeoRouteImport.update({
+  id: '/ceo',
+  path: '/ceo',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedOperationsIndexRoute =
   AuthenticatedOperationsIndexRouteImport.update({
-    id: '/operations/',
-    path: '/operations/',
-    getParentRoute: () => AuthenticatedRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOperationsRoute,
   } as any)
 const AuthenticatedItIndexRoute = AuthenticatedItIndexRouteImport.update({
-  id: '/it/',
-  path: '/it/',
-  getParentRoute: () => AuthenticatedRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedItRoute,
 } as any)
 const AuthenticatedFinanceIndexRoute =
   AuthenticatedFinanceIndexRouteImport.update({
@@ -72,9 +96,9 @@ const AuthenticatedFinanceIndexRoute =
   } as any)
 const AuthenticatedFacilitiesIndexRoute =
   AuthenticatedFacilitiesIndexRouteImport.update({
-    id: '/facilities/',
-    path: '/facilities/',
-    getParentRoute: () => AuthenticatedRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedFacilitiesRoute,
   } as any)
 const AuthenticatedCfoIndexRoute = AuthenticatedCfoIndexRouteImport.update({
   id: '/',
@@ -82,9 +106,9 @@ const AuthenticatedCfoIndexRoute = AuthenticatedCfoIndexRouteImport.update({
   getParentRoute: () => AuthenticatedCfoRoute,
 } as any)
 const AuthenticatedCeoIndexRoute = AuthenticatedCeoIndexRouteImport.update({
-  id: '/ceo/',
-  path: '/ceo/',
-  getParentRoute: () => AuthenticatedRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCeoRoute,
 } as any)
 const AuthenticatedFinanceValidationRoute =
   AuthenticatedFinanceValidationRouteImport.update({
@@ -136,8 +160,12 @@ const AuthenticatedCfoApprovalsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ceo': typeof AuthenticatedCeoRouteWithChildren
   '/cfo': typeof AuthenticatedCfoRouteWithChildren
+  '/facilities': typeof AuthenticatedFacilitiesRouteWithChildren
   '/finance': typeof AuthenticatedFinanceRouteWithChildren
+  '/it': typeof AuthenticatedItRouteWithChildren
+  '/operations': typeof AuthenticatedOperationsRouteWithChildren
   '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
   '/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
@@ -176,8 +204,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/ceo': typeof AuthenticatedCeoRouteWithChildren
   '/_authenticated/cfo': typeof AuthenticatedCfoRouteWithChildren
+  '/_authenticated/facilities': typeof AuthenticatedFacilitiesRouteWithChildren
   '/_authenticated/finance': typeof AuthenticatedFinanceRouteWithChildren
+  '/_authenticated/it': typeof AuthenticatedItRouteWithChildren
+  '/_authenticated/operations': typeof AuthenticatedOperationsRouteWithChildren
   '/_authenticated/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
   '/_authenticated/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/_authenticated/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
@@ -198,8 +230,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/ceo'
     | '/cfo'
+    | '/facilities'
     | '/finance'
+    | '/it'
+    | '/operations'
     | '/cfo/approvals'
     | '/cfo/audit'
     | '/cfo/invoices'
@@ -237,8 +273,12 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/login'
+    | '/_authenticated/ceo'
     | '/_authenticated/cfo'
+    | '/_authenticated/facilities'
     | '/_authenticated/finance'
+    | '/_authenticated/it'
+    | '/_authenticated/operations'
     | '/_authenticated/cfo/approvals'
     | '/_authenticated/cfo/audit'
     | '/_authenticated/cfo/invoices'
@@ -284,11 +324,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/operations': {
+      id: '/_authenticated/operations'
+      path: '/operations'
+      fullPath: '/operations'
+      preLoaderRoute: typeof AuthenticatedOperationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/it': {
+      id: '/_authenticated/it'
+      path: '/it'
+      fullPath: '/it'
+      preLoaderRoute: typeof AuthenticatedItRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/finance': {
       id: '/_authenticated/finance'
       path: '/finance'
       fullPath: '/finance'
       preLoaderRoute: typeof AuthenticatedFinanceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/facilities': {
+      id: '/_authenticated/facilities'
+      path: '/facilities'
+      fullPath: '/facilities'
+      preLoaderRoute: typeof AuthenticatedFacilitiesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/cfo': {
@@ -298,19 +359,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCfoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/ceo': {
+      id: '/_authenticated/ceo'
+      path: '/ceo'
+      fullPath: '/ceo'
+      preLoaderRoute: typeof AuthenticatedCeoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/operations/': {
       id: '/_authenticated/operations/'
-      path: '/operations'
+      path: '/'
       fullPath: '/operations/'
       preLoaderRoute: typeof AuthenticatedOperationsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      parentRoute: typeof AuthenticatedOperationsRoute
     }
     '/_authenticated/it/': {
       id: '/_authenticated/it/'
-      path: '/it'
+      path: '/'
       fullPath: '/it/'
       preLoaderRoute: typeof AuthenticatedItIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      parentRoute: typeof AuthenticatedItRoute
     }
     '/_authenticated/finance/': {
       id: '/_authenticated/finance/'
@@ -321,10 +389,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/facilities/': {
       id: '/_authenticated/facilities/'
-      path: '/facilities'
+      path: '/'
       fullPath: '/facilities/'
       preLoaderRoute: typeof AuthenticatedFacilitiesIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      parentRoute: typeof AuthenticatedFacilitiesRoute
     }
     '/_authenticated/cfo/': {
       id: '/_authenticated/cfo/'
@@ -335,10 +403,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/ceo/': {
       id: '/_authenticated/ceo/'
-      path: '/ceo'
+      path: '/'
       fullPath: '/ceo/'
       preLoaderRoute: typeof AuthenticatedCeoIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      parentRoute: typeof AuthenticatedCeoRoute
     }
     '/_authenticated/finance/validation': {
       id: '/_authenticated/finance/validation'
@@ -399,6 +467,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedCeoRouteChildren {
+  AuthenticatedCeoIndexRoute: typeof AuthenticatedCeoIndexRoute
+}
+
+const AuthenticatedCeoRouteChildren: AuthenticatedCeoRouteChildren = {
+  AuthenticatedCeoIndexRoute: AuthenticatedCeoIndexRoute,
+}
+
+const AuthenticatedCeoRouteWithChildren =
+  AuthenticatedCeoRoute._addFileChildren(AuthenticatedCeoRouteChildren)
+
 interface AuthenticatedCfoRouteChildren {
   AuthenticatedCfoApprovalsRoute: typeof AuthenticatedCfoApprovalsRoute
   AuthenticatedCfoAuditRoute: typeof AuthenticatedCfoAuditRoute
@@ -417,6 +496,20 @@ const AuthenticatedCfoRouteChildren: AuthenticatedCfoRouteChildren = {
 
 const AuthenticatedCfoRouteWithChildren =
   AuthenticatedCfoRoute._addFileChildren(AuthenticatedCfoRouteChildren)
+
+interface AuthenticatedFacilitiesRouteChildren {
+  AuthenticatedFacilitiesIndexRoute: typeof AuthenticatedFacilitiesIndexRoute
+}
+
+const AuthenticatedFacilitiesRouteChildren: AuthenticatedFacilitiesRouteChildren =
+  {
+    AuthenticatedFacilitiesIndexRoute: AuthenticatedFacilitiesIndexRoute,
+  }
+
+const AuthenticatedFacilitiesRouteWithChildren =
+  AuthenticatedFacilitiesRoute._addFileChildren(
+    AuthenticatedFacilitiesRouteChildren,
+  )
 
 interface AuthenticatedFinanceRouteChildren {
   AuthenticatedFinanceInvoicesRoute: typeof AuthenticatedFinanceInvoicesRoute
@@ -438,22 +531,48 @@ const AuthenticatedFinanceRouteChildren: AuthenticatedFinanceRouteChildren = {
 const AuthenticatedFinanceRouteWithChildren =
   AuthenticatedFinanceRoute._addFileChildren(AuthenticatedFinanceRouteChildren)
 
-interface AuthenticatedRouteChildren {
-  AuthenticatedCfoRoute: typeof AuthenticatedCfoRouteWithChildren
-  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRouteWithChildren
-  AuthenticatedCeoIndexRoute: typeof AuthenticatedCeoIndexRoute
-  AuthenticatedFacilitiesIndexRoute: typeof AuthenticatedFacilitiesIndexRoute
+interface AuthenticatedItRouteChildren {
   AuthenticatedItIndexRoute: typeof AuthenticatedItIndexRoute
+}
+
+const AuthenticatedItRouteChildren: AuthenticatedItRouteChildren = {
+  AuthenticatedItIndexRoute: AuthenticatedItIndexRoute,
+}
+
+const AuthenticatedItRouteWithChildren = AuthenticatedItRoute._addFileChildren(
+  AuthenticatedItRouteChildren,
+)
+
+interface AuthenticatedOperationsRouteChildren {
   AuthenticatedOperationsIndexRoute: typeof AuthenticatedOperationsIndexRoute
 }
 
+const AuthenticatedOperationsRouteChildren: AuthenticatedOperationsRouteChildren =
+  {
+    AuthenticatedOperationsIndexRoute: AuthenticatedOperationsIndexRoute,
+  }
+
+const AuthenticatedOperationsRouteWithChildren =
+  AuthenticatedOperationsRoute._addFileChildren(
+    AuthenticatedOperationsRouteChildren,
+  )
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedCeoRoute: typeof AuthenticatedCeoRouteWithChildren
+  AuthenticatedCfoRoute: typeof AuthenticatedCfoRouteWithChildren
+  AuthenticatedFacilitiesRoute: typeof AuthenticatedFacilitiesRouteWithChildren
+  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRouteWithChildren
+  AuthenticatedItRoute: typeof AuthenticatedItRouteWithChildren
+  AuthenticatedOperationsRoute: typeof AuthenticatedOperationsRouteWithChildren
+}
+
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCeoRoute: AuthenticatedCeoRouteWithChildren,
   AuthenticatedCfoRoute: AuthenticatedCfoRouteWithChildren,
+  AuthenticatedFacilitiesRoute: AuthenticatedFacilitiesRouteWithChildren,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRouteWithChildren,
-  AuthenticatedCeoIndexRoute: AuthenticatedCeoIndexRoute,
-  AuthenticatedFacilitiesIndexRoute: AuthenticatedFacilitiesIndexRoute,
-  AuthenticatedItIndexRoute: AuthenticatedItIndexRoute,
-  AuthenticatedOperationsIndexRoute: AuthenticatedOperationsIndexRoute,
+  AuthenticatedItRoute: AuthenticatedItRouteWithChildren,
+  AuthenticatedOperationsRoute: AuthenticatedOperationsRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
