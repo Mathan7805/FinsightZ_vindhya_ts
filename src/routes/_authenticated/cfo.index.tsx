@@ -15,7 +15,7 @@ import {
   YAxis,
 } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/cfo")({
+export const Route = createFileRoute("/_authenticated/cfo/")({
   head: () => ({ meta: [{ title: "CFO Dashboard — FInsightZ" }] }),
   component: CFODashboard,
 });
