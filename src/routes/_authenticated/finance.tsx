@@ -13,10 +13,10 @@ export const Route = createFileRoute("/_authenticated/finance")({
 
 const nav = [
   { label: "Upload Center", href: "/finance", icon: Upload },
-  { label: "Validation Queue", href: "/finance", icon: AlertTriangle },
-  { label: "Invoice Review", href: "/finance", icon: Receipt },
-  { label: "Reconciliation", href: "/finance", icon: ListChecks },
-  { label: "Master Sheets", href: "/finance", icon: FileSpreadsheet },
+  { label: "Validation Queue", href: "/finance/validation", icon: AlertTriangle },
+  { label: "Invoice Review", href: "/finance/invoices", icon: Receipt },
+  { label: "Reconciliation", href: "/finance/reconciliation", icon: ListChecks },
+  { label: "Master Sheets", href: "/finance/masters", icon: FileSpreadsheet },
 ];
 
 function FinanceDashboard() {
