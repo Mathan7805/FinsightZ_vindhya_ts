@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      pnl_lines: {
+        Row: {
+          amount: number | null
+          created_at: string
+          id: number
+          line_group: string | null
+          line_key: string
+          line_label: string
+          project_code: string
+          project_name: string | null
+          segment: string | null
+          upload_id: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          id?: number
+          line_group?: string | null
+          line_key: string
+          line_label: string
+          project_code: string
+          project_name?: string | null
+          segment?: string | null
+          upload_id: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          id?: number
+          line_group?: string | null
+          line_key?: string
+          line_label?: string
+          project_code?: string
+          project_name?: string | null
+          segment?: string | null
+          upload_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pnl_lines_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "pnl_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pnl_meta: {
+        Row: {
+          created_at: string
+          fte_billed: number | null
+          fte_onsite: number | null
+          fte_paid: number | null
+          fte_total: number | null
+          id: number
+          leave_gratuity_count: number | null
+          mgmt_count: number | null
+          project_code: string
+          seat_utilized: number | null
+          total_count_billed: number | null
+          upload_id: string
+        }
+        Insert: {
+          created_at?: string
+          fte_billed?: number | null
+          fte_onsite?: number | null
+          fte_paid?: number | null
+          fte_total?: number | null
+          id?: number
+          leave_gratuity_count?: number | null
+          mgmt_count?: number | null
+          project_code: string
+          seat_utilized?: number | null
+          total_count_billed?: number | null
+          upload_id: string
+        }
+        Update: {
+          created_at?: string
+          fte_billed?: number | null
+          fte_onsite?: number | null
+          fte_paid?: number | null
+          fte_total?: number | null
+          id?: number
+          leave_gratuity_count?: number | null
+          mgmt_count?: number | null
+          project_code?: string
+          seat_utilized?: number | null
+          total_count_billed?: number | null
+          upload_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pnl_meta_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "pnl_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pnl_runs: {
+        Row: {
+          computed: Json
+          created_at: string
+          id: string
+          period: string | null
+          published: boolean
+          upload_id: string | null
+        }
+        Insert: {
+          computed: Json
+          created_at?: string
+          id?: string
+          period?: string | null
+          published?: boolean
+          upload_id?: string | null
+        }
+        Update: {
+          computed?: Json
+          created_at?: string
+          id?: string
+          period?: string | null
+          published?: boolean
+          upload_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pnl_runs_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "pnl_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pnl_uploads: {
+        Row: {
+          created_at: string
+          filename: string
+          id: string
+          period: string | null
+          persona: string
+          project_codes: string[] | null
+          raw_json: Json | null
+          sheet_kind: string
+        }
+        Insert: {
+          created_at?: string
+          filename: string
+          id?: string
+          period?: string | null
+          persona?: string
+          project_codes?: string[] | null
+          raw_json?: Json | null
+          sheet_kind?: string
+        }
+        Update: {
+          created_at?: string
+          filename?: string
+          id?: string
+          period?: string | null
+          persona?: string
+          project_codes?: string[] | null
+          raw_json?: Json | null
+          sheet_kind?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
