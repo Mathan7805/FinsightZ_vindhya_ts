@@ -37,10 +37,10 @@ function ITDashboard() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Monthly Infra Spend" value="₹38.2M" delta="-2.1% MoM" accent="emerald" />
+          <StatCard label="Monthly IT Spend" value="₹38.2M" delta="-2.1% MoM" accent="emerald" />
+          <StatCard label="Cost per Seat / mo" value="₹20,740" delta="-₹420 MoM" accent="gold" />
+          <StatCard label="SaaS Annual Spend" value="₹25.5M" delta="3 renewals due" />
           <StatCard label="Seats Occupied" value="1,842 / 2,120" delta="87% utilized" />
-          <StatCard label="System Utilization" value="71%" delta="+3 pts" />
-          <StatCard label="Active SaaS Tools" value="46" delta="3 expiring" accent="gold" />
         </div>
 
         <div className="mb-8">
@@ -50,19 +50,20 @@ function ITDashboard() {
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
-            <h3 className="font-display font-semibold text-lg mb-1">Utilization by Process</h3>
-            <p className="text-xs text-muted-foreground mb-4">Seat vs system utilization (%)</p>
+            <h3 className="font-display font-semibold text-lg mb-1">IT Cost vs Revenue by Process</h3>
+            <p className="text-xs text-muted-foreground mb-4">₹ Million · current month</p>
             <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={utilization}>
+              <BarChart data={itSpend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
                 <XAxis dataKey="p" stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
                 <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
-                <Bar dataKey="seat" fill="oklch(0.72 0.16 162)" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="sys" fill="oklch(0.78 0.13 85)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="cost" fill="oklch(0.78 0.13 85)" radius={[6, 6, 0, 0]} name="IT Cost" />
+                <Bar dataKey="rev" fill="oklch(0.72 0.16 162)" radius={[6, 6, 0, 0]} name="Revenue" />
               </BarChart>
             </ResponsiveContainer>
           </div>
+
 
           <div className="glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-4">Software Subscriptions</h3>
