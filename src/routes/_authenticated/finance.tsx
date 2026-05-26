@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Upload, FileSpreadsheet, AlertTriangle, CheckCircle2, Receipt, ListChecks } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -38,6 +39,11 @@ function FinanceDashboard() {
           <StatCard label="Invoices in queue" value="142" delta="14 low-confidence" />
           <StatCard label="Validation errors" value="9" delta="3 critical" />
           <StatCard label="Reconciled" value="96.4%" delta="+1.8 pts" accent="gold" />
+        </div>
+
+        <div className="mb-8">
+          <UploadCenter persona="finance" title="Finance Upload & AI Reader"
+            subtitle="Drop monthly revenue, WIP, provisions, vendor invoices — the AI engine extracts headers, totals and posts to validation." />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">

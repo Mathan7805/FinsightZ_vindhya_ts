@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Zap, Droplets, Wrench, Upload } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -47,6 +48,11 @@ function FacilitiesDashboard() {
           <StatCard label="Active Buildings" value="6" delta="2 cities" />
           <StatCard label="Electricity (kWh)" value="139K" delta="-6% YoY" accent="gold" />
           <StatCard label="Open Maintenance" value="14" delta="3 high priority" />
+        </div>
+
+        <div className="mb-8">
+          <UploadCenter persona="facilities" title="Facilities Upload & AI Reader"
+            subtitle="Drop utility bills, rent agreements, AMC invoices — AI reads building, units consumed and amount with confidence scoring." />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Users, Target, Upload, TrendingUp } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Line, LineChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -44,6 +45,11 @@ function OpsDashboard() {
           <StatCard label="Billable FTE" value="2,184" delta="90.3%" />
           <StatCard label="Avg SLA" value="92.7%" delta="+1.4 pts" accent="gold" />
           <StatCard label="Avg AHT" value="324s" delta="-12s" />
+        </div>
+
+        <div className="mb-8">
+          <UploadCenter persona="operations" title="Operations Upload & AI Reader"
+            subtitle="Drop productivity sheets, headcount reconciliations, shift rosters — AI maps process codes, FTE and SLA fields automatically." />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">

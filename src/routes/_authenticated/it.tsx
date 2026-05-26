@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Server, Monitor, Cloud, Upload, Cpu, HardDrive } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -46,6 +47,11 @@ function ITDashboard() {
           <StatCard label="Seats Occupied" value="1,842 / 2,120" delta="87% utilized" />
           <StatCard label="System Utilization" value="71%" delta="+3 pts" />
           <StatCard label="Active SaaS Tools" value="46" delta="3 expiring" accent="gold" />
+        </div>
+
+        <div className="mb-8">
+          <UploadCenter persona="it" title="IT / Admin Upload & AI Reader"
+            subtitle="Drop SaaS invoices, infra bills, seat utilization sheets — AI extracts vendor, amount and process allocation hints." />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
