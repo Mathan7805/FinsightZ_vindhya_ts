@@ -22,10 +22,10 @@ export const Route = createFileRoute("/_authenticated/cfo")({
 
 const nav = [
   { label: "Overview", href: "/cfo", icon: LayoutDashboard },
-  { label: "P&L Review", href: "/cfo", icon: FileSpreadsheet },
-  { label: "Invoices", href: "/cfo", icon: Receipt },
-  { label: "Approvals", href: "/cfo", icon: CheckCircle2 },
-  { label: "Audit Log", href: "/cfo", icon: History },
+  { label: "P&L Review", href: "/cfo/pnl", icon: FileSpreadsheet },
+  { label: "Invoices", href: "/cfo/invoices", icon: Receipt },
+  { label: "Approvals", href: "/cfo/approvals", icon: CheckCircle2 },
+  { label: "Audit Log", href: "/cfo/audit", icon: History },
 ];
 
 const revenue = [
