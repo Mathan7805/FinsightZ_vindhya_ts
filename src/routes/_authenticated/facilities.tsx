@@ -50,6 +50,11 @@ function FacilitiesDashboard() {
           <StatCard label="Open Maintenance" value="14" delta="3 high priority" />
         </div>
 
+        <div className="mb-8">
+          <UploadCenter persona="facilities" title="Facilities Upload & AI Reader"
+            subtitle="Drop utility bills, rent agreements, AMC invoices — AI reads building, units consumed and amount with confidence scoring." />
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-1">Electricity Consumption</h3>

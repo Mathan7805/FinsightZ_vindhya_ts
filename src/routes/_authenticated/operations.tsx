@@ -47,6 +47,11 @@ function OpsDashboard() {
           <StatCard label="Avg AHT" value="324s" delta="-12s" />
         </div>
 
+        <div className="mb-8">
+          <UploadCenter persona="operations" title="Operations Upload & AI Reader"
+            subtitle="Drop productivity sheets, headcount reconciliations, shift rosters — AI maps process codes, FTE and SLA fields automatically." />
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-1">14-day Performance Trend</h3>
