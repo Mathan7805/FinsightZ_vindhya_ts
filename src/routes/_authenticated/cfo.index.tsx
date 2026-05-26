@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Upload, Eye } from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Upload, Eye, BarChart3 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/cfo/")({
 const nav = [
   { label: "Overview", href: "/cfo", icon: LayoutDashboard },
   { label: "P&L Review", href: "/cfo/pnl", icon: FileSpreadsheet },
+  { label: "Profitability", href: "/cfo/profitability", icon: BarChart3 },
   { label: "Invoices", href: "/cfo/invoices", icon: Receipt },
   { label: "Approvals", href: "/cfo/approvals", icon: CheckCircle2 },
   { label: "Audit Log", href: "/cfo/audit", icon: History },
@@ -153,7 +155,7 @@ function CFODashboard() {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="mt-4 w-full"><Upload className="w-4 h-4 mr-2" /> Upload finance master</Button>
+            <Button asChild variant="outline" className="mt-4 w-full"><Link to="/cfo/profitability"><Upload className="w-4 h-4 mr-2" /> Upload finance master</Link></Button>
           </div>
         </div>
       </div>
