@@ -39,10 +39,11 @@ function FacilitiesDashboard() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatCard label="Monthly Facility Spend" value="₹21.4M" delta="-3.2% MoM" accent="emerald" />
-          <StatCard label="Active Buildings" value="6" delta="2 cities" />
-          <StatCard label="Electricity (kWh)" value="139K" delta="-6% YoY" accent="gold" />
-          <StatCard label="Open Maintenance" value="14" delta="3 high priority" />
+          <StatCard label="Cost per Sqft / mo" value="₹107" delta="-₹4 MoM" accent="gold" />
+          <StatCard label="Rent + Utilities" value="₹18.3M" delta="85% of facility spend" />
+          <StatCard label="Active Buildings" value="6" delta="2 cities · 2.0L sqft" />
         </div>
+
 
         <div className="mb-8">
           <UploadCenter persona="facilities" title="Facilities Upload & AI Reader"
