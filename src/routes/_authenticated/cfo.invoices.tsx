@@ -128,16 +128,19 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
   const [lastScan, setLastScan] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const seenRef = useRef<Set<string>>(new Set());
+  const inputRef = useRef<HTMLInputElement>(null);
   const extract = useServerFn(extractInvoice);
   const Icon = cfg.icon;
 
-  const supported = typeof window !== "undefined" && "showDirectoryPicker" in window;
+  const inIframe = typeof window !== "undefined" && (() => { try { return window.self !== window.top; } catch { return true; } })();
+  const fsAccessSupported = typeof window !== "undefined" && "showDirectoryPicker" in window && !inIframe;
 
-  const processFile = useCallback(async (f: File, key: string) => {
+  const processFile = useCallback(async (f: File, key: string, displayName: string) => {
     const id = `${cfg.key}-${key}`;
+    const placeholder: Row = { id, filename: displayName, status: "scanning", fields: {} };
+    setRows((prev) => [placeholder, ...prev]);
+
     if (/\.(xlsx|xls|csv)$/i.test(f.name)) {
-      const placeholder: Row = { id, filename: f.name, status: "scanning", fields: {} };
-      setRows((prev) => [placeholder, ...prev]);
       try {
         const extracted = await parseExcelRows(f, id);
         setRows((prev) => [...extracted, ...prev.filter((r) => r.id !== id)]);
@@ -146,8 +149,6 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
       }
       return;
     }
-    const placeholder: Row = { id, filename: f.name, status: "scanning", fields: {} };
-    setRows((prev) => [placeholder, ...prev]);
     try {
       const { mime, b64 } = await fileToBase64(f);
       const out = await extract({ data: { filename: f.name, mime, dataBase64: b64, kind: cfg.key } });
@@ -159,47 +160,80 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
     }
   }, [cfg.key, extract, setRows]);
 
-  const scanOnce = useCallback(async (handle: any) => {
+  const processFiles = useCallback(async (files: File[]) => {
+    setBusy(true); setError(null);
+    const candidates = files.filter((f) => /\.(pdf|png|jpe?g|webp|xlsx|xls|csv)$/i.test(f.name));
+    const tasks: Promise<void>[] = [];
+    for (const f of candidates) {
+      const rel = (f as any).webkitRelativePath || f.name;
+      const key = `${rel}::${f.size}::${f.lastModified}`;
+      if (seenRef.current.has(key)) continue;
+      seenRef.current.add(key);
+      tasks.push(processFile(f, key, rel));
+    }
+    await Promise.all(tasks);
+    setLastScan(new Date());
+    setBusy(false);
+  }, [processFile]);
+
+  const scanHandle = useCallback(async (handle: any) => {
     if (!handle) return;
     setBusy(true); setError(null);
     try {
-      const tasks: Promise<void>[] = [];
+      const files: File[] = [];
       for await (const [name, entry] of handle.entries()) {
         if (entry.kind !== "file") continue;
-        if (!/\.(pdf|png|jpe?g|webp|xlsx|xls|csv)$/i.test(name)) continue;
-        const file: File = await entry.getFile();
-        const key = `${name}::${file.size}::${file.lastModified}`;
-        if (seenRef.current.has(key)) continue;
-        seenRef.current.add(key);
-        tasks.push(processFile(file, key));
+        const f: File = await entry.getFile();
+        try { Object.defineProperty(f, "webkitRelativePath", { value: name, configurable: true }); } catch {}
+        files.push(f);
       }
-      await Promise.all(tasks);
-      setLastScan(new Date());
+      await processFiles(files);
     } catch (e: any) {
       setError(e?.message ?? "Scan failed");
     } finally {
       setBusy(false);
     }
-  }, [processFile]);
+  }, [processFiles]);
 
-  // poll every 8s while watching
   useEffect(() => {
     if (!watching || !dirHandle) return;
-    scanOnce(dirHandle);
-    const t = setInterval(() => scanOnce(dirHandle), 8000);
+    scanHandle(dirHandle);
+    const t = setInterval(() => scanHandle(dirHandle), 8000);
     return () => clearInterval(t);
-  }, [watching, dirHandle, scanOnce]);
+  }, [watching, dirHandle, scanHandle]);
 
   const pickFolder = async () => {
-    try {
-      const h = await (window as any).showDirectoryPicker({ mode: "read" });
-      seenRef.current = new Set();
-      setDirHandle(h);
-      setFolderName(h.name);
-      setWatching(true);
-    } catch (e: any) {
-      if (e?.name !== "AbortError") setError(e?.message ?? "Could not open folder");
+    if (fsAccessSupported) {
+      try {
+        const h = await (window as any).showDirectoryPicker({ mode: "read" });
+        seenRef.current = new Set();
+        setDirHandle(h);
+        setFolderName(h.name);
+        setWatching(true);
+        return;
+      } catch (e: any) {
+        if (e?.name === "AbortError") return;
+        // fall through to webkitdirectory input
+      }
     }
+    inputRef.current?.click();
+  };
+
+  const onFolderInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (!files.length) return;
+    const first = (files[0] as any).webkitRelativePath as string | undefined;
+    const root = first?.split("/")[0] ?? "Selected folder";
+    seenRef.current = new Set();
+    setFolderName(root);
+    setDirHandle(null);
+    await processFiles(files);
+  };
+
+  const rescan = () => {
+    if (dirHandle) scanHandle(dirHandle);
+    else inputRef.current?.click();
   };
 
   return (
@@ -215,8 +249,10 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {watching ? (
+          {watching && dirHandle ? (
             <Badge variant="outline" className="border-success/40 text-success gap-1"><Radio className="w-3 h-3 animate-pulse" /> Live</Badge>
+          ) : folderName ? (
+            <Badge variant="outline" className="border-warning/40 text-warning gap-1"><Pause className="w-3 h-3" /> Manual rescan</Badge>
           ) : (
             <Badge variant="outline" className="border-border text-muted-foreground gap-1"><Pause className="w-3 h-3" /> Idle</Badge>
           )}
@@ -239,19 +275,32 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
             )}
           </div>
         </div>
-        <Button variant="outline" onClick={pickFolder} disabled={!supported}>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          // @ts-expect-error webkitdirectory is non-standard but widely supported
+          webkitdirectory=""
+          directory=""
+          className="hidden"
+          onChange={onFolderInput}
+        />
+        <Button variant="outline" onClick={pickFolder}>
           <FolderOpen className="w-4 h-4 mr-2" /> {folderName ? "Change folder" : "Link folder"}
         </Button>
-        <Button onClick={() => setWatching((v) => !v)} disabled={!dirHandle}
+        <Button onClick={rescan} disabled={!folderName}
           className="bg-[var(--gradient-emerald)] text-primary-foreground shadow-glow">
-          {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : watching ? <Pause className="w-4 h-4 mr-2" /> : <Radio className="w-4 h-4 mr-2" />}
-          {watching ? "Pause monitoring" : "Start monitoring"}
+          {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Radio className="w-4 h-4 mr-2" />}
+          {dirHandle ? "Re-scan now" : "Re-scan folder"}
         </Button>
       </div>
 
-      {!supported && (
-        <div className="mx-5 my-3 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
-          Folder monitoring requires a Chromium-based browser (Chrome, Edge, Brave). Safari/Firefox don't yet expose the File System Access API.
+      {!fsAccessSupported && (
+        <div className="mx-5 my-3 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning flex flex-wrap items-center gap-2">
+          <span>Live folder watching is blocked inside the editor preview. Link a folder, then hit <b>Re-scan</b> — only new files get processed.</span>
+          <a href={typeof window !== "undefined" ? window.location.href : "#"} target="_blank" rel="noreferrer" className="underline ml-auto">
+            Open in new tab for continuous monitoring →
+          </a>
         </div>
       )}
       {error && <div className="mx-5 my-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">{error}</div>}
