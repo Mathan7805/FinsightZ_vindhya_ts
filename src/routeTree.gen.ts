@@ -40,6 +40,7 @@ import { Route as AuthenticatedFacilitiesWaterRouteImport } from './routes/_auth
 import { Route as AuthenticatedFacilitiesUtilitiesRouteImport } from './routes/_authenticated/facilities.utilities'
 import { Route as AuthenticatedFacilitiesUploadRouteImport } from './routes/_authenticated/facilities.upload'
 import { Route as AuthenticatedFacilitiesMaintenanceRouteImport } from './routes/_authenticated/facilities.maintenance'
+import { Route as AuthenticatedCfoProfitabilityRouteImport } from './routes/_authenticated/cfo.profitability'
 import { Route as AuthenticatedCfoPnlRouteImport } from './routes/_authenticated/cfo.pnl'
 import { Route as AuthenticatedCfoInvoicesRouteImport } from './routes/_authenticated/cfo.invoices'
 import { Route as AuthenticatedCfoAuditRouteImport } from './routes/_authenticated/cfo.audit'
@@ -218,6 +219,12 @@ const AuthenticatedFacilitiesMaintenanceRoute =
     path: '/maintenance',
     getParentRoute: () => AuthenticatedFacilitiesRoute,
   } as any)
+const AuthenticatedCfoProfitabilityRoute =
+  AuthenticatedCfoProfitabilityRouteImport.update({
+    id: '/profitability',
+    path: '/profitability',
+    getParentRoute: () => AuthenticatedCfoRoute,
+  } as any)
 const AuthenticatedCfoPnlRoute = AuthenticatedCfoPnlRouteImport.update({
   id: '/pnl',
   path: '/pnl',
@@ -279,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/cfo/profitability': typeof AuthenticatedCfoProfitabilityRoute
   '/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
   '/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
   '/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
@@ -313,6 +321,7 @@ export interface FileRoutesByTo {
   '/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/cfo/profitability': typeof AuthenticatedCfoProfitabilityRoute
   '/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
   '/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
   '/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
@@ -355,6 +364,7 @@ export interface FileRoutesById {
   '/_authenticated/cfo/audit': typeof AuthenticatedCfoAuditRoute
   '/_authenticated/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
   '/_authenticated/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/_authenticated/cfo/profitability': typeof AuthenticatedCfoProfitabilityRoute
   '/_authenticated/facilities/maintenance': typeof AuthenticatedFacilitiesMaintenanceRoute
   '/_authenticated/facilities/upload': typeof AuthenticatedFacilitiesUploadRoute
   '/_authenticated/facilities/utilities': typeof AuthenticatedFacilitiesUtilitiesRoute
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/cfo/audit'
     | '/cfo/invoices'
     | '/cfo/pnl'
+    | '/cfo/profitability'
     | '/facilities/maintenance'
     | '/facilities/upload'
     | '/facilities/utilities'
@@ -431,6 +442,7 @@ export interface FileRouteTypes {
     | '/cfo/audit'
     | '/cfo/invoices'
     | '/cfo/pnl'
+    | '/cfo/profitability'
     | '/facilities/maintenance'
     | '/facilities/upload'
     | '/facilities/utilities'
@@ -472,6 +484,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cfo/audit'
     | '/_authenticated/cfo/invoices'
     | '/_authenticated/cfo/pnl'
+    | '/_authenticated/cfo/profitability'
     | '/_authenticated/facilities/maintenance'
     | '/_authenticated/facilities/upload'
     | '/_authenticated/facilities/utilities'
@@ -721,6 +734,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFacilitiesMaintenanceRouteImport
       parentRoute: typeof AuthenticatedFacilitiesRoute
     }
+    '/_authenticated/cfo/profitability': {
+      id: '/_authenticated/cfo/profitability'
+      path: '/profitability'
+      fullPath: '/cfo/profitability'
+      preLoaderRoute: typeof AuthenticatedCfoProfitabilityRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
     '/_authenticated/cfo/pnl': {
       id: '/_authenticated/cfo/pnl'
       path: '/pnl'
@@ -804,6 +824,7 @@ interface AuthenticatedCfoRouteChildren {
   AuthenticatedCfoAuditRoute: typeof AuthenticatedCfoAuditRoute
   AuthenticatedCfoInvoicesRoute: typeof AuthenticatedCfoInvoicesRoute
   AuthenticatedCfoPnlRoute: typeof AuthenticatedCfoPnlRoute
+  AuthenticatedCfoProfitabilityRoute: typeof AuthenticatedCfoProfitabilityRoute
   AuthenticatedCfoIndexRoute: typeof AuthenticatedCfoIndexRoute
 }
 
@@ -812,6 +833,7 @@ const AuthenticatedCfoRouteChildren: AuthenticatedCfoRouteChildren = {
   AuthenticatedCfoAuditRoute: AuthenticatedCfoAuditRoute,
   AuthenticatedCfoInvoicesRoute: AuthenticatedCfoInvoicesRoute,
   AuthenticatedCfoPnlRoute: AuthenticatedCfoPnlRoute,
+  AuthenticatedCfoProfitabilityRoute: AuthenticatedCfoProfitabilityRoute,
   AuthenticatedCfoIndexRoute: AuthenticatedCfoIndexRoute,
 }
 

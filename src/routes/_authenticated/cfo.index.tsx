@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Upload, Eye } from "lucide-react";
+import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Upload, Eye, BarChart3 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
