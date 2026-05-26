@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Upload, FileSpreadsheet, AlertTriangle, CheckCircle2, Receipt, ListChecks } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
+import { UploadCenter } from "@/components/UploadCenter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
