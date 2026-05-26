@@ -18,6 +18,14 @@ import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedFacilitiesRouteImport } from './routes/_authenticated/facilities'
 import { Route as AuthenticatedCfoRouteImport } from './routes/_authenticated/cfo'
 import { Route as AuthenticatedCeoRouteImport } from './routes/_authenticated/ceo'
+import { Route as AuthenticatedFinanceValidationRouteImport } from './routes/_authenticated/finance.validation'
+import { Route as AuthenticatedFinanceReconciliationRouteImport } from './routes/_authenticated/finance.reconciliation'
+import { Route as AuthenticatedFinanceMastersRouteImport } from './routes/_authenticated/finance.masters'
+import { Route as AuthenticatedFinanceInvoicesRouteImport } from './routes/_authenticated/finance.invoices'
+import { Route as AuthenticatedCfoPnlRouteImport } from './routes/_authenticated/cfo.pnl'
+import { Route as AuthenticatedCfoInvoicesRouteImport } from './routes/_authenticated/cfo.invoices'
+import { Route as AuthenticatedCfoAuditRouteImport } from './routes/_authenticated/cfo.audit'
+import { Route as AuthenticatedCfoApprovalsRouteImport } from './routes/_authenticated/cfo.approvals'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -63,26 +71,88 @@ const AuthenticatedCeoRoute = AuthenticatedCeoRouteImport.update({
   path: '/ceo',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFinanceValidationRoute =
+  AuthenticatedFinanceValidationRouteImport.update({
+    id: '/validation',
+    path: '/validation',
+    getParentRoute: () => AuthenticatedFinanceRoute,
+  } as any)
+const AuthenticatedFinanceReconciliationRoute =
+  AuthenticatedFinanceReconciliationRouteImport.update({
+    id: '/reconciliation',
+    path: '/reconciliation',
+    getParentRoute: () => AuthenticatedFinanceRoute,
+  } as any)
+const AuthenticatedFinanceMastersRoute =
+  AuthenticatedFinanceMastersRouteImport.update({
+    id: '/masters',
+    path: '/masters',
+    getParentRoute: () => AuthenticatedFinanceRoute,
+  } as any)
+const AuthenticatedFinanceInvoicesRoute =
+  AuthenticatedFinanceInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedFinanceRoute,
+  } as any)
+const AuthenticatedCfoPnlRoute = AuthenticatedCfoPnlRouteImport.update({
+  id: '/pnl',
+  path: '/pnl',
+  getParentRoute: () => AuthenticatedCfoRoute,
+} as any)
+const AuthenticatedCfoInvoicesRoute =
+  AuthenticatedCfoInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedCfoRoute,
+  } as any)
+const AuthenticatedCfoAuditRoute = AuthenticatedCfoAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedCfoRoute,
+} as any)
+const AuthenticatedCfoApprovalsRoute =
+  AuthenticatedCfoApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedCfoRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/ceo': typeof AuthenticatedCeoRoute
-  '/cfo': typeof AuthenticatedCfoRoute
+  '/cfo': typeof AuthenticatedCfoRouteWithChildren
   '/facilities': typeof AuthenticatedFacilitiesRoute
-  '/finance': typeof AuthenticatedFinanceRoute
+  '/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/it': typeof AuthenticatedItRoute
   '/operations': typeof AuthenticatedOperationsRoute
+  '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
+  '/cfo/audit': typeof AuthenticatedCfoAuditRoute
+  '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
+  '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
+  '/finance/masters': typeof AuthenticatedFinanceMastersRoute
+  '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
+  '/finance/validation': typeof AuthenticatedFinanceValidationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/ceo': typeof AuthenticatedCeoRoute
-  '/cfo': typeof AuthenticatedCfoRoute
+  '/cfo': typeof AuthenticatedCfoRouteWithChildren
   '/facilities': typeof AuthenticatedFacilitiesRoute
-  '/finance': typeof AuthenticatedFinanceRoute
+  '/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/it': typeof AuthenticatedItRoute
   '/operations': typeof AuthenticatedOperationsRoute
+  '/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
+  '/cfo/audit': typeof AuthenticatedCfoAuditRoute
+  '/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
+  '/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
+  '/finance/masters': typeof AuthenticatedFinanceMastersRoute
+  '/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
+  '/finance/validation': typeof AuthenticatedFinanceValidationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -90,11 +160,19 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/ceo': typeof AuthenticatedCeoRoute
-  '/_authenticated/cfo': typeof AuthenticatedCfoRoute
+  '/_authenticated/cfo': typeof AuthenticatedCfoRouteWithChildren
   '/_authenticated/facilities': typeof AuthenticatedFacilitiesRoute
-  '/_authenticated/finance': typeof AuthenticatedFinanceRoute
+  '/_authenticated/finance': typeof AuthenticatedFinanceRouteWithChildren
   '/_authenticated/it': typeof AuthenticatedItRoute
   '/_authenticated/operations': typeof AuthenticatedOperationsRoute
+  '/_authenticated/cfo/approvals': typeof AuthenticatedCfoApprovalsRoute
+  '/_authenticated/cfo/audit': typeof AuthenticatedCfoAuditRoute
+  '/_authenticated/cfo/invoices': typeof AuthenticatedCfoInvoicesRoute
+  '/_authenticated/cfo/pnl': typeof AuthenticatedCfoPnlRoute
+  '/_authenticated/finance/invoices': typeof AuthenticatedFinanceInvoicesRoute
+  '/_authenticated/finance/masters': typeof AuthenticatedFinanceMastersRoute
+  '/_authenticated/finance/reconciliation': typeof AuthenticatedFinanceReconciliationRoute
+  '/_authenticated/finance/validation': typeof AuthenticatedFinanceValidationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +185,14 @@ export interface FileRouteTypes {
     | '/finance'
     | '/it'
     | '/operations'
+    | '/cfo/approvals'
+    | '/cfo/audit'
+    | '/cfo/invoices'
+    | '/cfo/pnl'
+    | '/finance/invoices'
+    | '/finance/masters'
+    | '/finance/reconciliation'
+    | '/finance/validation'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +203,14 @@ export interface FileRouteTypes {
     | '/finance'
     | '/it'
     | '/operations'
+    | '/cfo/approvals'
+    | '/cfo/audit'
+    | '/cfo/invoices'
+    | '/cfo/pnl'
+    | '/finance/invoices'
+    | '/finance/masters'
+    | '/finance/reconciliation'
+    | '/finance/validation'
   id:
     | '__root__'
     | '/'
@@ -128,6 +222,14 @@ export interface FileRouteTypes {
     | '/_authenticated/finance'
     | '/_authenticated/it'
     | '/_authenticated/operations'
+    | '/_authenticated/cfo/approvals'
+    | '/_authenticated/cfo/audit'
+    | '/_authenticated/cfo/invoices'
+    | '/_authenticated/cfo/pnl'
+    | '/_authenticated/finance/invoices'
+    | '/_authenticated/finance/masters'
+    | '/_authenticated/finance/reconciliation'
+    | '/_authenticated/finance/validation'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,23 +303,114 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCeoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/finance/validation': {
+      id: '/_authenticated/finance/validation'
+      path: '/validation'
+      fullPath: '/finance/validation'
+      preLoaderRoute: typeof AuthenticatedFinanceValidationRouteImport
+      parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/finance/reconciliation': {
+      id: '/_authenticated/finance/reconciliation'
+      path: '/reconciliation'
+      fullPath: '/finance/reconciliation'
+      preLoaderRoute: typeof AuthenticatedFinanceReconciliationRouteImport
+      parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/finance/masters': {
+      id: '/_authenticated/finance/masters'
+      path: '/masters'
+      fullPath: '/finance/masters'
+      preLoaderRoute: typeof AuthenticatedFinanceMastersRouteImport
+      parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/finance/invoices': {
+      id: '/_authenticated/finance/invoices'
+      path: '/invoices'
+      fullPath: '/finance/invoices'
+      preLoaderRoute: typeof AuthenticatedFinanceInvoicesRouteImport
+      parentRoute: typeof AuthenticatedFinanceRoute
+    }
+    '/_authenticated/cfo/pnl': {
+      id: '/_authenticated/cfo/pnl'
+      path: '/pnl'
+      fullPath: '/cfo/pnl'
+      preLoaderRoute: typeof AuthenticatedCfoPnlRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
+    '/_authenticated/cfo/invoices': {
+      id: '/_authenticated/cfo/invoices'
+      path: '/invoices'
+      fullPath: '/cfo/invoices'
+      preLoaderRoute: typeof AuthenticatedCfoInvoicesRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
+    '/_authenticated/cfo/audit': {
+      id: '/_authenticated/cfo/audit'
+      path: '/audit'
+      fullPath: '/cfo/audit'
+      preLoaderRoute: typeof AuthenticatedCfoAuditRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
+    '/_authenticated/cfo/approvals': {
+      id: '/_authenticated/cfo/approvals'
+      path: '/approvals'
+      fullPath: '/cfo/approvals'
+      preLoaderRoute: typeof AuthenticatedCfoApprovalsRouteImport
+      parentRoute: typeof AuthenticatedCfoRoute
+    }
   }
 }
 
+interface AuthenticatedCfoRouteChildren {
+  AuthenticatedCfoApprovalsRoute: typeof AuthenticatedCfoApprovalsRoute
+  AuthenticatedCfoAuditRoute: typeof AuthenticatedCfoAuditRoute
+  AuthenticatedCfoInvoicesRoute: typeof AuthenticatedCfoInvoicesRoute
+  AuthenticatedCfoPnlRoute: typeof AuthenticatedCfoPnlRoute
+}
+
+const AuthenticatedCfoRouteChildren: AuthenticatedCfoRouteChildren = {
+  AuthenticatedCfoApprovalsRoute: AuthenticatedCfoApprovalsRoute,
+  AuthenticatedCfoAuditRoute: AuthenticatedCfoAuditRoute,
+  AuthenticatedCfoInvoicesRoute: AuthenticatedCfoInvoicesRoute,
+  AuthenticatedCfoPnlRoute: AuthenticatedCfoPnlRoute,
+}
+
+const AuthenticatedCfoRouteWithChildren =
+  AuthenticatedCfoRoute._addFileChildren(AuthenticatedCfoRouteChildren)
+
+interface AuthenticatedFinanceRouteChildren {
+  AuthenticatedFinanceInvoicesRoute: typeof AuthenticatedFinanceInvoicesRoute
+  AuthenticatedFinanceMastersRoute: typeof AuthenticatedFinanceMastersRoute
+  AuthenticatedFinanceReconciliationRoute: typeof AuthenticatedFinanceReconciliationRoute
+  AuthenticatedFinanceValidationRoute: typeof AuthenticatedFinanceValidationRoute
+}
+
+const AuthenticatedFinanceRouteChildren: AuthenticatedFinanceRouteChildren = {
+  AuthenticatedFinanceInvoicesRoute: AuthenticatedFinanceInvoicesRoute,
+  AuthenticatedFinanceMastersRoute: AuthenticatedFinanceMastersRoute,
+  AuthenticatedFinanceReconciliationRoute:
+    AuthenticatedFinanceReconciliationRoute,
+  AuthenticatedFinanceValidationRoute: AuthenticatedFinanceValidationRoute,
+}
+
+const AuthenticatedFinanceRouteWithChildren =
+  AuthenticatedFinanceRoute._addFileChildren(AuthenticatedFinanceRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedCeoRoute: typeof AuthenticatedCeoRoute
-  AuthenticatedCfoRoute: typeof AuthenticatedCfoRoute
+  AuthenticatedCfoRoute: typeof AuthenticatedCfoRouteWithChildren
   AuthenticatedFacilitiesRoute: typeof AuthenticatedFacilitiesRoute
-  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
+  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRouteWithChildren
   AuthenticatedItRoute: typeof AuthenticatedItRoute
   AuthenticatedOperationsRoute: typeof AuthenticatedOperationsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCeoRoute: AuthenticatedCeoRoute,
-  AuthenticatedCfoRoute: AuthenticatedCfoRoute,
+  AuthenticatedCfoRoute: AuthenticatedCfoRouteWithChildren,
   AuthenticatedFacilitiesRoute: AuthenticatedFacilitiesRoute,
-  AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
+  AuthenticatedFinanceRoute: AuthenticatedFinanceRouteWithChildren,
   AuthenticatedItRoute: AuthenticatedItRoute,
   AuthenticatedOperationsRoute: AuthenticatedOperationsRoute,
 }
