@@ -1,26 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { PERSONAS, useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
+  const { user, ready } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!ready) return;
+    if (user) navigate({ to: PERSONAS[user.persona].route });
+    else navigate({ to: "/login" });
+  }, [ready, user, navigate]);
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen grid place-items-center">
+      <div className="text-muted-foreground text-sm">Loading FInsightZ…</div>
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
