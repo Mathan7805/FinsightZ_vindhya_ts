@@ -55,6 +55,9 @@ const radar = [
 function OpsDashboard() {
   const [window, setWindow] = useState<14 | 30>(14);
   const data = trend30.slice(0, window);
+  const { data: spend } = useQuery({ queryKey: ["approved-spend-team"], queryFn: () => approvedSpendByTeam() });
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+
 
   return (
     <AppShell nav={nav}>
