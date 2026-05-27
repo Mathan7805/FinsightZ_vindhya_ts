@@ -116,6 +116,14 @@ function CEODashboard() {
           <StatCard label="ROCE" value="24.8%" delta="+1.6 pts" />
         </div>
 
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <StatCard label="AR · Approved (live)" value={fmtCr(arApproved)} delta={`${inv?.count ?? 0} invoices`} accent="emerald" />
+          <StatCard label="AP · Approved (live)" value={fmtCr(inv?.ap ?? 0)} delta="from CFO queue" />
+          <StatCard label="Facilities · Approved" value={fmtCr(spend?.totals.facilities_cost.amount ?? 0)} delta={`${spend?.totals.facilities_cost.count ?? 0} uploads`} accent="gold" />
+          <StatCard label="IT · Approved" value={fmtCr(spend?.totals.it_cost.amount ?? 0)} delta={`${spend?.totals.it_cost.count ?? 0} uploads`} />
+        </div>
+
+
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
             <div className="flex items-center justify-between mb-4">
