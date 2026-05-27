@@ -62,10 +62,10 @@ function FacilitiesDashboard() {
                     <stop offset="100%" stopColor="oklch(0.78 0.13 85)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="m" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="m" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis stroke="var(--chart-axis)" fontSize={12} />
+                <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--foreground)" }} />
                 <Area type="monotone" dataKey="cost" stroke="oklch(0.78 0.13 85)" fill="url(#pow)" strokeWidth={2} name="₹ M" />
               </AreaChart>
             </ResponsiveContainer>

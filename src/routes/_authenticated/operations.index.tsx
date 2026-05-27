@@ -97,9 +97,9 @@ function OpsDashboard() {
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="d" stroke="oklch(0.72 0.02 150)" fontSize={11} />
-                <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="d" stroke="var(--chart-axis)" fontSize={11} />
+                <YAxis stroke="var(--chart-axis)" fontSize={12} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Line type="monotone" dataKey="revPerFte" stroke={PALETTE[0]} strokeWidth={2} dot={false} name="Revenue/FTE" />
@@ -137,9 +137,9 @@ function OpsDashboard() {
             <p className="text-xs text-muted-foreground mb-4">Revenue vs cost · margin overlay · ₹ Million</p>
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart data={processPnl}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="p" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis yAxisId="l" stroke="oklch(0.72 0.02 150)" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="p" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis yAxisId="l" stroke="var(--chart-axis)" fontSize={12} />
                 <YAxis yAxisId="r" orientation="right" stroke={PALETTE[2]} fontSize={12} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -155,8 +155,8 @@ function OpsDashboard() {
             <p className="text-xs text-muted-foreground mb-2">Actual vs target</p>
             <ResponsiveContainer width="100%" height={300}>
               <RadarChart data={radar}>
-                <PolarGrid stroke="oklch(0.32 0.03 165 / 40%)" />
-                <PolarAngleAxis dataKey="k" stroke="oklch(0.72 0.02 150)" fontSize={10} />
+                <PolarGrid stroke="var(--chart-grid)" />
+                <PolarAngleAxis dataKey="k" stroke="var(--chart-axis)" fontSize={10} />
                 <Radar name="Target" dataKey="target" stroke={PALETTE[1]} fill={PALETTE[1]} fillOpacity={0.15} />
                 <Radar name="Actual" dataKey="actual" stroke={PALETTE[0]} fill={PALETTE[0]} fillOpacity={0.4} />
                 <Tooltip contentStyle={TOOLTIP} />
