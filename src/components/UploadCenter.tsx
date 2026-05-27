@@ -1,12 +1,15 @@
 import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
-import { Upload, FileSpreadsheet, Sparkles, CheckCircle2, AlertTriangle, X, Brain } from "lucide-react";
+import { Upload, FileSpreadsheet, Sparkles, CheckCircle2, AlertTriangle, X, Brain, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useServerFn } from "@tanstack/react-start";
+import { submitUploadApproval } from "@/lib/approvals.functions";
 
 type Stage = "queued" | "parsing" | "ai" | "validating" | "done" | "error";
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 type ParsedSheet = {
   name: string;
