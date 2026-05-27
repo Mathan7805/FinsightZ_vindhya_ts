@@ -4,6 +4,8 @@ import { Upload } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { approvedSpendByTeam } from "@/lib/approvals.functions";
 import {
   Line, LineChart, ComposedChart, Bar, CartesianGrid, ResponsiveContainer,
   Tooltip, XAxis, YAxis, Legend, Cell, Pie, PieChart,
