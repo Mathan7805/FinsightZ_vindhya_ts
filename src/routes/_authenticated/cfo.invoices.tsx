@@ -183,6 +183,8 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
     if (/\.(xlsx|xls|csv)$/i.test(f.name)) {
       try {
         const extracted = await parseExcelRows(f, id);
+        // persist each parsed row + queue an approval
+        await Promise.all(extracted.map((r) => persistInvoice(cfg.key, r.filename, r.fields).catch(() => null)));
         setRows((prev) => [...extracted, ...prev.filter((r) => r.id !== id)]);
       } catch (e: any) {
         setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Parse failed" } : r)));
@@ -192,8 +194,13 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
     try {
       const { mime, b64 } = await fileToBase64(f);
       const out = await extract({ data: { filename: f.name, mime, dataBase64: b64, kind: cfg.key } });
+      let saved = out.ok;
+      if (out.ok) {
+        const dbId = await persistInvoice(cfg.key, f.name, out.fields ?? {});
+        saved = !!dbId;
+      }
       setRows((prev) => prev.map((r) => r.id === id
-        ? { ...r, status: out.ok ? "saved" : "error", fields: out.fields ?? {}, error: out.ok ? undefined : "AI returned no fields" }
+        ? { ...r, status: saved ? "saved" : "error", fields: out.fields ?? {}, error: saved ? undefined : "AI returned no fields" }
         : r));
     } catch (e: any) {
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Failed" } : r)));
