@@ -118,8 +118,9 @@ function CFODashboard() {
           <StatCard label="Net Profit" value="₹ 94M" delta="+6.1%" />
           <StatCard label="EBITDA Margin" value="28.4%" delta="+1.6 pts" accent="emerald" />
           <StatCard label="DSO" value="42 days" delta="-3 days" />
-          <StatCard label="Cost Variance" value="-2.1%" delta="vs budget" accent="gold" />
-          <StatCard label="Cash from Ops" value="₹ 102M" delta="+₹ 14M" />
+          <StatCard label="AR · Approved (live)" value={fmtCr(arLive)} delta={`${liveTotals?.count ?? 0} invoices`} accent="gold" />
+          <StatCard label="AP · Approved (live)" value={fmtCr(apLive)} delta="from approvals queue" />
+
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
