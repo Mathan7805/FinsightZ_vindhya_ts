@@ -29,6 +29,9 @@ type UploadItem = {
   totalRows?: number;
   fields?: ExtractedField[];
   error?: string;
+  saveState?: SaveState;
+  saveError?: string;
+  approvalId?: string;
 };
 
 const STAGE_LABEL: Record<Stage, string> = {
