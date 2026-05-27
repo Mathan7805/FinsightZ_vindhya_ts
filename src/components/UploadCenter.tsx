@@ -334,11 +334,25 @@ export function UploadCenter({
                     </Badge>
                   </div>
                   <Progress value={it.progress} className="h-1.5" />
-                  <div className="flex justify-between text-[11px] text-muted-foreground mt-1.5">
+                  <div className="flex justify-between items-center text-[11px] text-muted-foreground mt-1.5">
                     <span>{(it.size / 1024).toFixed(1)} KB</span>
-                    {it.totalRows != null && <span>{it.totalRows} rows · {it.sheets?.length ?? 0} sheet(s)</span>}
+                    <div className="flex items-center gap-2">
+                      {it.totalRows != null && <span>{it.totalRows} rows · {it.sheets?.length ?? 0} sheet(s)</span>}
+                      {it.saveState === "saving" && <Loader2 className="w-3 h-3 animate-spin text-primary" />}
+                      {it.saveState === "saved" && (
+                        <span className="inline-flex items-center gap-1 text-success" title="Saved to CFO approvals">
+                          <CheckCircle2 className="w-3 h-3" /> saved
+                        </span>
+                      )}
+                      {it.saveState === "error" && (
+                        <span className="inline-flex items-center gap-1 text-destructive" title={it.saveError ?? "Save failed"}>
+                          <AlertTriangle className="w-3 h-3" /> save error
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {it.error && <div className="text-[11px] text-destructive mt-1">{it.error}</div>}
+                  {it.saveError && <div className="text-[11px] text-destructive mt-1">{it.saveError}</div>}
                 </button>
               ))}
             </div>
