@@ -72,6 +72,7 @@ const radar = [
 
 function CFODashboard() {
   const [period, setPeriod] = useState<"6M" | "QTD" | "YTD">("6M");
+  const [cashMonths, setCashMonths] = useState<string[]>(() => cashflow.slice(-3).map((c) => c.m));
   const data = useMemo(() => {
     if (period === "QTD") return monthly.slice(-3);
     if (period === "YTD") return monthly;
