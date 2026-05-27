@@ -174,6 +174,7 @@ export function UploadCenter({
   const [dragging, setDragging] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const submit = useServerFn(submitUploadApproval);
 
   const updateItem = (id: string, patch: Partial<UploadItem>) =>
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...patch } : it)));
@@ -191,7 +192,33 @@ export function UploadCenter({
       updateItem(id, { stage: "validating", progress: 85, fields });
 
       await new Promise((r) => setTimeout(r, 250));
-      updateItem(id, { stage: "done", progress: 100 });
+      updateItem(id, { stage: "done", progress: 100, saveState: "saving" });
+
+      // Auto-submit to CFO approvals queue
+      try {
+        const amountField = fields.find((f) => f.k.startsWith("Σ "));
+        const amount = amountField ? Number(amountField.v.replace(/[^\d.-]/g, "")) || null : null;
+        const summary: Record<string, any> = {
+          rows: totalRows,
+          sheets: sheets.length,
+          file: file.name,
+        };
+        for (const f of fields) summary[f.k] = f.v;
+        const row = await submit({
+          data: {
+            persona,
+            title: `${persona[0].toUpperCase()}${persona.slice(1)} upload · ${file.name}`,
+            team: persona,
+            submitter: persona,
+            amount,
+            summary,
+            source_id: id,
+          },
+        });
+        updateItem(id, { saveState: "saved", approvalId: (row as any)?.id });
+      } catch (e: any) {
+        updateItem(id, { saveState: "error", saveError: e?.message ?? "Save failed" });
+      }
     } catch (e: any) {
       updateItem(id, { stage: "error", progress: 100, error: e?.message ?? "Failed to parse" });
     }
