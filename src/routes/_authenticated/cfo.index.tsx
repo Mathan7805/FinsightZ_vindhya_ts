@@ -81,6 +81,15 @@ function CFODashboard() {
     return monthly;
   }, [period]);
 
+  const { data: liveTotals } = useQuery({
+    queryKey: ["approved-invoice-totals"],
+    queryFn: () => approvedInvoiceTotals(),
+  });
+
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+  const arLive = (liveTotals?.ar_issued ?? 0) + (liveTotals?.ar_billing ?? 0);
+  const apLive = liveTotals?.ap ?? 0;
+
   return (
     <AppShell nav={nav}>
       <div className="p-6 md:p-10 max-w-7xl mx-auto">
