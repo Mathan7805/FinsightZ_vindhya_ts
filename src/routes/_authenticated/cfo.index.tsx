@@ -4,6 +4,8 @@ import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Uploa
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { approvedInvoiceTotals } from "@/lib/approvals.functions";
 import {
   Area, AreaChart, Bar, BarChart, ComposedChart, Line, CartesianGrid, Cell, Pie, PieChart,
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
@@ -25,7 +27,7 @@ const nav = [
 ];
 
 const PALETTE = ["oklch(0.72 0.16 162)", "oklch(0.78 0.13 85)", "oklch(0.65 0.18 200)", "oklch(0.68 0.14 320)", "oklch(0.74 0.15 30)"];
-const TOOLTIP = { background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 };
+const TOOLTIP = { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--foreground)" };
 
 const monthly = [
   { m: "Jun", rev: 420, cost: 310, gm: 26 },
@@ -79,6 +81,15 @@ function CFODashboard() {
     return monthly;
   }, [period]);
 
+  const { data: liveTotals } = useQuery({
+    queryKey: ["approved-invoice-totals"],
+    queryFn: () => approvedInvoiceTotals(),
+  });
+
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+  const arLive = (liveTotals?.ar_issued ?? 0) + (liveTotals?.ar_billing ?? 0);
+  const apLive = liveTotals?.ap ?? 0;
+
   return (
     <AppShell nav={nav}>
       <div className="p-6 md:p-10 max-w-7xl mx-auto">
@@ -107,8 +118,9 @@ function CFODashboard() {
           <StatCard label="Net Profit" value="₹ 94M" delta="+6.1%" />
           <StatCard label="EBITDA Margin" value="28.4%" delta="+1.6 pts" accent="emerald" />
           <StatCard label="DSO" value="42 days" delta="-3 days" />
-          <StatCard label="Cost Variance" value="-2.1%" delta="vs budget" accent="gold" />
-          <StatCard label="Cash from Ops" value="₹ 102M" delta="+₹ 14M" />
+          <StatCard label="AR · Approved (live)" value={fmtCr(arLive)} delta={`${liveTotals?.count ?? 0} invoices`} accent="gold" />
+          <StatCard label="AP · Approved (live)" value={fmtCr(apLive)} delta="from approvals queue" />
+
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
@@ -128,9 +140,9 @@ function CFODashboard() {
                     <stop offset="100%" stopColor={PALETTE[0]} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="m" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis yAxisId="l" stroke="oklch(0.72 0.02 150)" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="m" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis yAxisId="l" stroke="var(--chart-axis)" fontSize={12} />
                 <YAxis yAxisId="r" orientation="right" stroke={PALETTE[2]} fontSize={12} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
@@ -208,9 +220,9 @@ function CFODashboard() {
                     <stop offset="100%" stopColor={PALETTE[1]} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="m" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="m" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis stroke="var(--chart-axis)" fontSize={12} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Area type="monotone" dataKey="inflow" stroke={PALETTE[0]} fill="url(#in)" strokeWidth={2} />
@@ -225,8 +237,8 @@ function CFODashboard() {
             <p className="text-xs text-muted-foreground mb-2">Actual vs target</p>
             <ResponsiveContainer width="100%" height={260}>
               <RadarChart data={radar}>
-                <PolarGrid stroke="oklch(0.32 0.03 165 / 40%)" />
-                <PolarAngleAxis dataKey="k" stroke="oklch(0.72 0.02 150)" fontSize={10} />
+                <PolarGrid stroke="var(--chart-grid)" />
+                <PolarAngleAxis dataKey="k" stroke="var(--chart-axis)" fontSize={10} />
                 <Radar name="Target" dataKey="target" stroke={PALETTE[1]} fill={PALETTE[1]} fillOpacity={0.15} />
                 <Radar name="Actual" dataKey="actual" stroke={PALETTE[0]} fill={PALETTE[0]} fillOpacity={0.4} />
                 <Tooltip contentStyle={TOOLTIP} />
@@ -242,9 +254,9 @@ function CFODashboard() {
             <p className="text-xs text-muted-foreground mb-4">November snapshot</p>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={processMargin}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="p" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis yAxisId="l" stroke="oklch(0.72 0.02 150)" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="p" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis yAxisId="l" stroke="var(--chart-axis)" fontSize={12} />
                 <YAxis yAxisId="r" orientation="right" stroke={PALETTE[1]} fontSize={12} />
                 <Tooltip contentStyle={TOOLTIP} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />

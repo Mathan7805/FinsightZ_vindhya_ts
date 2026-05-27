@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useServerFn } from "@tanstack/react-start";
 import { extractInvoice } from "@/lib/invoice-extract.functions";
+import { supabase } from "@/integrations/supabase/client";
 import * as XLSX from "xlsx";
+
 
 export const Route = createFileRoute("/_authenticated/cfo/invoices")({
   head: () => ({ meta: [{ title: "Invoices — FInsightZ" }] }),
@@ -23,6 +25,44 @@ const nav = [
 ];
 
 type Kind = "client_issued" | "client_billing" | "vendor_received";
+
+async function persistInvoice(kind: Kind, filename: string, fields: any) {
+  const payload = {
+    kind,
+    source_filename: filename,
+    invoice_number: fields.invoice_number ?? null,
+    invoice_date:
+      fields.invoice_date && /^\d{4}-\d{2}-\d{2}/.test(fields.invoice_date)
+        ? String(fields.invoice_date).slice(0, 10)
+        : null,
+    party_name: fields.party_name ?? null,
+    party_gstin: fields.party_gstin ?? null,
+    currency: fields.currency ?? "INR",
+    amount: Number(fields.amount) || null,
+    taxable_amount: Number(fields.taxable_amount) || null,
+    gst_amount: Number(fields.gst_amount) || null,
+    party_status: fields.status ?? null,
+    cost_center: fields.cost_center ?? null,
+    line_summary: fields.line_summary ?? null,
+    raw_fields: fields,
+  };
+  const { data, error } = await supabase.from("invoices").insert(payload).select().single();
+  if (error || !data) return null;
+  const title =
+    kind === "vendor_received"
+      ? `Vendor invoice · ${fields.party_name ?? filename}`
+      : `Client invoice · ${fields.party_name ?? filename}`;
+  await supabase.from("approvals").insert({
+    source_type: "invoice",
+    source_id: data.id,
+    title,
+    submitter: kind === "vendor_received" ? "AP folder watcher" : "AR folder watcher",
+    team: "Finance",
+    amount: Number(fields.amount) || null,
+    summary: fields,
+  });
+  return data.id;
+}
 
 type Row = {
   id: string;
@@ -143,6 +183,8 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
     if (/\.(xlsx|xls|csv)$/i.test(f.name)) {
       try {
         const extracted = await parseExcelRows(f, id);
+        // persist each parsed row + queue an approval
+        await Promise.all(extracted.map((r) => persistInvoice(cfg.key, r.filename, r.fields).catch(() => null)));
         setRows((prev) => [...extracted, ...prev.filter((r) => r.id !== id)]);
       } catch (e: any) {
         setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Parse failed" } : r)));
@@ -152,8 +194,13 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
     try {
       const { mime, b64 } = await fileToBase64(f);
       const out = await extract({ data: { filename: f.name, mime, dataBase64: b64, kind: cfg.key } });
+      let saved = out.ok;
+      if (out.ok) {
+        const dbId = await persistInvoice(cfg.key, f.name, out.fields ?? {});
+        saved = !!dbId;
+      }
       setRows((prev) => prev.map((r) => r.id === id
-        ? { ...r, status: out.ok ? "saved" : "error", fields: out.fields ?? {}, error: out.ok ? undefined : "AI returned no fields" }
+        ? { ...r, status: saved ? "saved" : "error", fields: out.fields ?? {}, error: saved ? undefined : "AI returned no fields" }
         : r));
     } catch (e: any) {
       setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "error", error: e?.message ?? "Failed" } : r)));

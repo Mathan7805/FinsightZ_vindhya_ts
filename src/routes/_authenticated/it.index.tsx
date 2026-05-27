@@ -54,10 +54,10 @@ function ITDashboard() {
             <p className="text-xs text-muted-foreground mb-4">₹ Million · current month</p>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={itSpend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.32 0.03 165 / 40%)" />
-                <XAxis dataKey="p" stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <YAxis stroke="oklch(0.72 0.02 150)" fontSize={12} />
-                <Tooltip contentStyle={{ background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                <XAxis dataKey="p" stroke="var(--chart-axis)" fontSize={12} />
+                <YAxis stroke="var(--chart-axis)" fontSize={12} />
+                <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--foreground)" }} />
                 <Bar dataKey="cost" fill="oklch(0.78 0.13 85)" radius={[6, 6, 0, 0]} name="IT Cost" />
                 <Bar dataKey="rev" fill="oklch(0.72 0.16 162)" radius={[6, 6, 0, 0]} name="Revenue" />
               </BarChart>
