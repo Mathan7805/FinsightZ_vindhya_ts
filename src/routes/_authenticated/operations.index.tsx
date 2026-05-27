@@ -89,6 +89,8 @@ function OpsDashboard() {
           <StatCard label="Cost per Billable Hr" value="₹ 312" delta="-₹ 8" />
           <StatCard label="Revenue Leakage" value="2.4%" delta="-0.6 pts" accent="gold" />
           <StatCard label="Process Contribution" value="₹ 544 Cr" delta="+8.4%" />
+          <StatCard label="Ops Uploads · Approved" value={fmtCr(spend?.totals.operations_metric.amount ?? 0)} delta={`${spend?.totals.operations_metric.count ?? 0} approved`} accent="emerald" />
+          <StatCard label="Facilities · Approved" value={fmtCr(spend?.totals.facilities_cost.amount ?? 0)} delta={`${spend?.totals.facilities_cost.count ?? 0} uploads`} />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
