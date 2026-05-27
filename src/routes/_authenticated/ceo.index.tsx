@@ -21,8 +21,8 @@ const PALETTE = [
   "oklch(0.68 0.14 320)", "oklch(0.74 0.15 30)",
 ];
 
-const ebitdaByPeriod = {
-  "TTM": [
+const ebitdaByPeriod: Record<"TTM" | "YTD", { p: string; rev: number; ebitda: number; net: number }[]> = {
+  TTM: [
     { p: "Q1'24", rev: 1480, ebitda: 312, net: 248 },
     { p: "Q2'24", rev: 1562, ebitda: 348, net: 281 },
     { p: "Q3'24", rev: 1635, ebitda: 372, net: 298 },
@@ -30,7 +30,7 @@ const ebitdaByPeriod = {
     { p: "Q1'25", rev: 1802, ebitda: 438, net: 351 },
     { p: "Q2'25", rev: 1884, ebitda: 471, net: 378 },
   ],
-  "YTD": [
+  YTD: [
     { p: "Apr", rev: 612, ebitda: 148, net: 118 },
     { p: "May", rev: 628, ebitda: 156, net: 124 },
     { p: "Jun", rev: 644, ebitda: 162, net: 131 },
@@ -38,7 +38,7 @@ const ebitdaByPeriod = {
     { p: "Aug", rev: 671, ebitda: 174, net: 141 },
     { p: "Sep", rev: 684, ebitda: 178, net: 145 },
   ],
-} as const;
+};
 
 const bu = [
   { n: "BPO", rev: 681, margin: 22, gm: 38 },
