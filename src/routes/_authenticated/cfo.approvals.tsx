@@ -110,8 +110,8 @@ function Approvals() {
               Nothing here. Inbox zero.
             </div>
           ) : (
-            rows.map((r: Approval) => (
-              <ApprovalCard key={r.id} item={r} onDecide={(d) => mut.mutate({ id: r.id, decision: d })} busy={mut.isPending && mut.variables?.id === r.id} />
+            rows.map((r) => (
+              <ApprovalCard key={r.id} item={r as Approval} onDecide={(d) => mut.mutate({ id: r.id, decision: d })} busy={mut.isPending && mut.variables?.id === r.id} />
             ))
           )}
         </div>
