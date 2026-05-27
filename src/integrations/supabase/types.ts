@@ -14,6 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
+      approvals: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          notes: string | null
+          source_id: string
+          source_type: string
+          status: string
+          submitter: string | null
+          summary: Json | null
+          team: string | null
+          title: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          notes?: string | null
+          source_id: string
+          source_type: string
+          status?: string
+          submitter?: string | null
+          summary?: Json | null
+          team?: string | null
+          title: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          notes?: string | null
+          source_id?: string
+          source_type?: string
+          status?: string
+          submitter?: string | null
+          summary?: Json | null
+          team?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          amount: number | null
+          approval_status: string
+          cost_center: string | null
+          created_at: string
+          currency: string | null
+          decided_at: string | null
+          decided_by: string | null
+          gst_amount: number | null
+          id: string
+          invoice_date: string | null
+          invoice_number: string | null
+          kind: string
+          line_summary: string | null
+          party_gstin: string | null
+          party_name: string | null
+          party_status: string | null
+          raw_fields: Json | null
+          source_filename: string
+          taxable_amount: number | null
+        }
+        Insert: {
+          amount?: number | null
+          approval_status?: string
+          cost_center?: string | null
+          created_at?: string
+          currency?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          gst_amount?: number | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string | null
+          kind: string
+          line_summary?: string | null
+          party_gstin?: string | null
+          party_name?: string | null
+          party_status?: string | null
+          raw_fields?: Json | null
+          source_filename: string
+          taxable_amount?: number | null
+        }
+        Update: {
+          amount?: number | null
+          approval_status?: string
+          cost_center?: string | null
+          created_at?: string
+          currency?: string | null
+          decided_at?: string | null
+          decided_by?: string | null
+          gst_amount?: number | null
+          id?: string
+          invoice_date?: string | null
+          invoice_number?: string | null
+          kind?: string
+          line_summary?: string | null
+          party_gstin?: string | null
+          party_name?: string | null
+          party_status?: string | null
+          raw_fields?: Json | null
+          source_filename?: string
+          taxable_amount?: number | null
+        }
+        Relationships: []
+      }
       pnl_lines: {
         Row: {
           amount: number | null
