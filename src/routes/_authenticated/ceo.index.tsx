@@ -81,6 +81,10 @@ function CEODashboard() {
     const net = trend.reduce((s, x) => s + x.net, 0);
     return { rev, eb, net, ebPct: ((eb / rev) * 100).toFixed(1), netPct: ((net / rev) * 100).toFixed(1) };
   }, [trend]);
+  const { data: spend } = useQuery({ queryKey: ["approved-spend-team"], queryFn: () => approvedSpendByTeam() });
+  const { data: inv } = useQuery({ queryKey: ["approved-invoice-totals"], queryFn: () => approvedInvoiceTotals() });
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+  const arApproved = (inv?.ar_issued ?? 0) + (inv?.ar_billing ?? 0);
 
   return (
     <AppShell nav={nav}>
