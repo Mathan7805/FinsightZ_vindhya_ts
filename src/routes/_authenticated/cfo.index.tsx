@@ -163,12 +163,40 @@ function CFODashboard() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">
-            <h3 className="font-display font-semibold text-lg mb-1">Cash Inflow vs Outflow</h3>
-            <p className="text-xs text-muted-foreground mb-4">₹ Million · last 6 months</p>
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          <div className="glass rounded-2xl p-6 shadow-elevated">
+            <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+              <div>
+                <h3 className="font-display font-semibold text-lg">Cash Inflow vs Outflow</h3>
+                <p className="text-xs text-muted-foreground">₹ Million · {cashMonths.join(" → ") || "select months"}</p>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {cashflow.map((c) => {
+                  const on = cashMonths.includes(c.m);
+                  return (
+                    <button
+                      key={c.m}
+                      onClick={() =>
+                        setCashMonths((prev) =>
+                          prev.includes(c.m)
+                            ? prev.filter((x) => x !== c.m)
+                            : [...prev, c.m].sort(
+                                (a, b) => cashflow.findIndex((x) => x.m === a) - cashflow.findIndex((x) => x.m === b),
+                              ),
+                        )
+                      }
+                      className={`px-2.5 py-1 rounded-md text-xs border transition-colors ${
+                        on ? "bg-primary/15 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {c.m}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={cashflow}>
+              <AreaChart data={cashflow.filter((c) => cashMonths.includes(c.m))}>
                 <defs>
                   <linearGradient id="in" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={PALETTE[0]} stopOpacity={0.6} />
@@ -189,6 +217,7 @@ function CFODashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+
 
           <div className="glass rounded-2xl p-6 shadow-elevated">
             <h3 className="font-display font-semibold text-lg mb-1">Financial Health</h3>
