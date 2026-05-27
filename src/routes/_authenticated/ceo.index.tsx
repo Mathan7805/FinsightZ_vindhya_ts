@@ -4,6 +4,8 @@ import { TrendingUp, Building2, IndianRupee } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { approvedSpendByTeam, approvedInvoiceTotals } from "@/lib/approvals.functions";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart,
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
@@ -79,6 +81,10 @@ function CEODashboard() {
     const net = trend.reduce((s, x) => s + x.net, 0);
     return { rev, eb, net, ebPct: ((eb / rev) * 100).toFixed(1), netPct: ((net / rev) * 100).toFixed(1) };
   }, [trend]);
+  const { data: spend } = useQuery({ queryKey: ["approved-spend-team"], queryFn: () => approvedSpendByTeam() });
+  const { data: inv } = useQuery({ queryKey: ["approved-invoice-totals"], queryFn: () => approvedInvoiceTotals() });
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+  const arApproved = (inv?.ar_issued ?? 0) + (inv?.ar_billing ?? 0);
 
   return (
     <AppShell nav={nav}>
@@ -109,6 +115,14 @@ function CEODashboard() {
           <StatCard label="Avg Contract Value" value="₹ 28.4 Cr" delta="+9.2%" accent="gold" />
           <StatCard label="ROCE" value="24.8%" delta="+1.6 pts" />
         </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <StatCard label="AR · Approved (live)" value={fmtCr(arApproved)} delta={`${inv?.count ?? 0} invoices`} accent="emerald" />
+          <StatCard label="AP · Approved (live)" value={fmtCr(inv?.ap ?? 0)} delta="from CFO queue" />
+          <StatCard label="Facilities · Approved" value={fmtCr(spend?.totals.facilities_cost.amount ?? 0)} delta={`${spend?.totals.facilities_cost.count ?? 0} uploads`} accent="gold" />
+          <StatCard label="IT · Approved" value={fmtCr(spend?.totals.it_cost.amount ?? 0)} delta={`${spend?.totals.it_cost.count ?? 0} uploads`} />
+        </div>
+
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 glass rounded-2xl p-6 shadow-elevated">

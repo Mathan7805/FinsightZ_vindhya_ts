@@ -4,6 +4,8 @@ import { Upload } from "lucide-react";
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { approvedSpendByTeam } from "@/lib/approvals.functions";
 import {
   Line, LineChart, ComposedChart, Bar, CartesianGrid, ResponsiveContainer,
   Tooltip, XAxis, YAxis, Legend, Cell, Pie, PieChart,
@@ -53,6 +55,9 @@ const radar = [
 function OpsDashboard() {
   const [window, setWindow] = useState<14 | 30>(14);
   const data = trend30.slice(0, window);
+  const { data: spend } = useQuery({ queryKey: ["approved-spend-team"], queryFn: () => approvedSpendByTeam() });
+  const fmtCr = (n: number) => n >= 1e7 ? `₹ ${(n / 1e7).toFixed(2)}Cr` : n >= 1e5 ? `₹ ${(n / 1e5).toFixed(1)}L` : `₹ ${Math.round(n).toLocaleString("en-IN")}`;
+
 
   return (
     <AppShell nav={nav}>
@@ -84,6 +89,8 @@ function OpsDashboard() {
           <StatCard label="Cost per Billable Hr" value="₹ 312" delta="-₹ 8" />
           <StatCard label="Revenue Leakage" value="2.4%" delta="-0.6 pts" accent="gold" />
           <StatCard label="Process Contribution" value="₹ 544 Cr" delta="+8.4%" />
+          <StatCard label="Ops Uploads · Approved" value={fmtCr(spend?.totals.operations_metric.amount ?? 0)} delta={`${spend?.totals.operations_metric.count ?? 0} approved`} accent="emerald" />
+          <StatCard label="Facilities · Approved" value={fmtCr(spend?.totals.facilities_cost.amount ?? 0)} delta={`${spend?.totals.facilities_cost.count ?? 0} uploads`} />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
