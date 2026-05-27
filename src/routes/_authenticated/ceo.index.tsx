@@ -68,7 +68,7 @@ const treemap = bu.map((b, i) => ({
   name: b.n, size: b.rev, fill: PALETTE[i],
 }));
 
-const TOOLTIP = { background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 };
+const TOOLTIP = { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--foreground)" };
 
 function CEODashboard() {
   const [period, setPeriod] = useState<"TTM" | "YTD">("TTM");

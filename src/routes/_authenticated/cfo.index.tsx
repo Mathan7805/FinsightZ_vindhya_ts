@@ -25,7 +25,7 @@ const nav = [
 ];
 
 const PALETTE = ["oklch(0.72 0.16 162)", "oklch(0.78 0.13 85)", "oklch(0.65 0.18 200)", "oklch(0.68 0.14 320)", "oklch(0.74 0.15 30)"];
-const TOOLTIP = { background: "oklch(0.22 0.035 165)", border: "1px solid oklch(0.32 0.03 165)", borderRadius: 12 };
+const TOOLTIP = { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12, color: "var(--foreground)" };
 
 const monthly = [
   { m: "Jun", rev: 420, cost: 310, gm: 26 },
