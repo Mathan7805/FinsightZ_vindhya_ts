@@ -9,40 +9,6 @@ import { extractInvoice } from "@/lib/invoice-extract.functions";
 import { supabase } from "@/integrations/supabase/client";
 import * as XLSX from "xlsx";
 
-async function persistInvoice(kind: Kind, filename: string, fields: any) {
-  const payload = {
-    kind,
-    source_filename: filename,
-    invoice_number: fields.invoice_number ?? null,
-    invoice_date: fields.invoice_date && /^\d{4}-\d{2}-\d{2}/.test(fields.invoice_date) ? fields.invoice_date.slice(0, 10) : null,
-    party_name: fields.party_name ?? null,
-    party_gstin: fields.party_gstin ?? null,
-    currency: fields.currency ?? "INR",
-    amount: Number(fields.amount) || null,
-    taxable_amount: Number(fields.taxable_amount) || null,
-    gst_amount: Number(fields.gst_amount) || null,
-    party_status: fields.status ?? null,
-    cost_center: fields.cost_center ?? null,
-    line_summary: fields.line_summary ?? null,
-    raw_fields: fields,
-  };
-  const { data, error } = await supabase.from("invoices").insert(payload).select().single();
-  if (error || !data) return null;
-  const title =
-    kind === "vendor_received"
-      ? `Vendor invoice · ${fields.party_name ?? filename}`
-      : `Client invoice · ${fields.party_name ?? filename}`;
-  await supabase.from("approvals").insert({
-    source_type: "invoice",
-    source_id: data.id,
-    title,
-    submitter: kind === "vendor_received" ? "AP folder watcher" : "AR folder watcher",
-    team: "Finance",
-    amount: Number(fields.amount) || null,
-    summary: fields,
-  });
-  return data.id;
-}
 
 export const Route = createFileRoute("/_authenticated/cfo/invoices")({
   head: () => ({ meta: [{ title: "Invoices — FInsightZ" }] }),
