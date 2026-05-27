@@ -4,6 +4,8 @@ import { LayoutDashboard, FileSpreadsheet, Receipt, CheckCircle2, History, Uploa
 import { AppShell, PageHeader, StatCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { approvedInvoiceTotals } from "@/lib/approvals.functions";
 import {
   Area, AreaChart, Bar, BarChart, ComposedChart, Line, CartesianGrid, Cell, Pie, PieChart,
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
