@@ -90,6 +90,8 @@ type Row = {
     party_gstin?: string;
     currency?: string;
     amount?: number;
+    amount_inr?: number | null;
+    fx_rate?: number;
     taxable_amount?: number;
     gst_amount?: number;
     status?: string;
