@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useServerFn } from "@tanstack/react-start";
 import { extractInvoice } from "@/lib/invoice-extract.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { toINR, fmtMoney, normalizeCurrency } from "@/lib/fx";
 import * as XLSX from "xlsx";
 
 
@@ -27,6 +28,14 @@ const nav = [
 type Kind = "client_issued" | "client_billing" | "vendor_received";
 
 async function persistInvoice(kind: Kind, filename: string, fields: any) {
+  const currency = normalizeCurrency(fields.currency);
+  const amt = Number(fields.amount) || null;
+  const { inr, rate } = toINR(amt, currency);
+  // mutate fields so the row UI reflects the normalised currency + INR
+  fields.currency = currency;
+  fields.amount_inr = inr;
+  fields.fx_rate = rate;
+
   const payload = {
     kind,
     source_filename: filename,
@@ -37,8 +46,10 @@ async function persistInvoice(kind: Kind, filename: string, fields: any) {
         : null,
     party_name: fields.party_name ?? null,
     party_gstin: fields.party_gstin ?? null,
-    currency: fields.currency ?? "INR",
-    amount: Number(fields.amount) || null,
+    currency,
+    amount: amt,
+    amount_inr: inr,
+    fx_rate: rate,
     taxable_amount: Number(fields.taxable_amount) || null,
     gst_amount: Number(fields.gst_amount) || null,
     party_status: fields.status ?? null,
@@ -58,8 +69,11 @@ async function persistInvoice(kind: Kind, filename: string, fields: any) {
     title,
     submitter: kind === "vendor_received" ? "AP folder watcher" : "AR folder watcher",
     team: "Finance",
-    amount: Number(fields.amount) || null,
-    summary: fields,
+    amount: inr,            // INR-normalised — feeds dashboards
+    amount_original: amt,   // original currency value
+    currency,
+    fx_rate: rate,
+    summary: { ...fields, amount_inr: inr, fx_rate: rate, currency },
   });
   return data.id;
 }
@@ -76,6 +90,8 @@ type Row = {
     party_gstin?: string;
     currency?: string;
     amount?: number;
+    amount_inr?: number | null;
+    fx_rate?: number;
     taxable_amount?: number;
     gst_amount?: number;
     status?: string;
@@ -124,6 +140,7 @@ async function parseExcelRows(f: File, baseId: string): Promise<Row[]> {
       invoice_date: find(r, ["date", "billdate"])?.toString(),
       party_name: find(r, ["client", "customer", "vendor", "party", "name"])?.toString(),
       party_gstin: find(r, ["gstin", "gstno"])?.toString(),
+      currency: find(r, ["currency", "ccy"])?.toString(),
       amount: Number(find(r, ["amount", "total", "value", "grandtotal"]) ?? 0) || undefined,
       taxable_amount: Number(find(r, ["taxable", "basic", "subtotal"]) ?? 0) || undefined,
       gst_amount: Number(find(r, ["gst", "tax"]) ?? 0) || undefined,
@@ -364,16 +381,20 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
               <th className="px-3 py-2">GSTIN</th>
               <th className="px-3 py-2 text-right">Taxable</th>
               <th className="px-3 py-2 text-right">GST</th>
-              <th className="px-3 py-2 text-right">Total</th>
+              <th className="px-3 py-2 text-right">Total (orig)</th>
+              <th className="px-3 py-2 text-right">Total in INR</th>
               <th className="px-3 py-2">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40">
             {rows.length === 0 ? (
-              <tr><td colSpan={10} className="px-4 py-10 text-center text-muted-foreground">
+              <tr><td colSpan={11} className="px-4 py-10 text-center text-muted-foreground">
                 {dirHandle ? "Watching folder — drop new files into it and they'll appear here." : "Link a folder above. FInsightZ will continuously watch it and auto-extract new invoices."}
               </td></tr>
-            ) : rows.map((r) => (
+            ) : rows.map((r) => {
+              const ccy = r.fields.currency ?? "INR";
+              const isForeign = ccy !== "INR";
+              return (
               <tr key={r.id} className="hover:bg-card/30">
                 <td className="px-4 py-2"><SaveMark row={r} /></td>
                 <td className="px-4 py-2 max-w-[260px] truncate">
@@ -385,12 +406,22 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
                 <td className="px-3 py-2">{r.fields.invoice_date ?? "—"}</td>
                 <td className="px-3 py-2">{r.fields.party_name ?? "—"}</td>
                 <td className="px-3 py-2 font-mono text-[10px]">{r.fields.party_gstin ?? "—"}</td>
-                <td className="px-3 py-2 text-right tabular-nums">{fmtAmt(r.fields.taxable_amount)}</td>
-                <td className="px-3 py-2 text-right tabular-nums">{fmtAmt(r.fields.gst_amount)}</td>
-                <td className="px-3 py-2 text-right tabular-nums font-semibold">{fmtAmt(r.fields.amount)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{fmtMoney(r.fields.taxable_amount, ccy)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{fmtMoney(r.fields.gst_amount, ccy)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">
+                  <div>{fmtMoney(r.fields.amount, ccy)}</div>
+                  {isForeign && <div className="text-[10px] text-muted-foreground">{ccy}</div>}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums font-semibold">
+                  <div>{fmtAmt(r.fields.amount_inr ?? (ccy === "INR" ? r.fields.amount : undefined))}</div>
+                  {isForeign && r.fields.fx_rate && (
+                    <div className="text-[10px] text-muted-foreground">@ ₹{r.fields.fx_rate.toFixed(2)}/{ccy}</div>
+                  )}
+                </td>
                 <td className="px-3 py-2">{statusBadge(r.fields.status)}</td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -403,7 +434,7 @@ function CFOInvoices() {
   const [billing, setBilling] = useState<Row[]>([]);
   const [vendor, setVendor] = useState<Row[]>([]);
 
-  const totals = (rs: Row[]) => rs.reduce((s, r) => s + (Number(r.fields.amount) || 0), 0);
+  const totals = (rs: Row[]) => rs.reduce((s, r) => s + (Number(r.fields.amount_inr ?? (r.fields.currency === "INR" || !r.fields.currency ? r.fields.amount : 0)) || 0), 0);
 
   return (
     <AppShell nav={nav}>

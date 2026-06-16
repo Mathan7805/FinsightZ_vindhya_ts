@@ -33,6 +33,8 @@ type Approval = {
   submitter: string | null;
   team: string | null;
   amount: number | null;
+  amount_original: number | null;
+  fx_rate: number | null;
   currency: string | null;
   summary: any;
   status: "pending" | "approved" | "rejected";
@@ -48,9 +50,20 @@ const sourceLabel: Record<string, string> = {
   it_cost: "IT Cost",
 };
 
-function fmt(n?: number | null) {
+function fmtINRLocal(n?: number | null) {
   if (n == null) return "—";
   return `₹${new Intl.NumberFormat("en-IN").format(Math.round(n))}`;
+}
+
+function fmtOrig(n?: number | null, code?: string | null) {
+  if (n == null) return null;
+  const c = code ?? "INR";
+  if (c === "INR") return null;
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 2 }).format(Number(n));
+  } catch {
+    return `${c} ${new Intl.NumberFormat("en-US").format(Math.round(Number(n)))}`;
+  }
 }
 
 function Approvals() {
@@ -85,7 +98,7 @@ function Approvals() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Pending" value={String(stats.pending)} delta={fmt(stats.pendingAmount)} />
+          <StatCard label="Pending" value={String(stats.pending)} delta={fmtINRLocal(stats.pendingAmount)} />
           <StatCard label="Approved (all-time)" value={String(stats.approved)} accent="emerald" />
           <StatCard label="Rejected" value={String(stats.rejected)} />
           <StatCard label="Avg cycle" value="—" delta="set after approvals" accent="gold" />
@@ -142,7 +155,15 @@ function ApprovalCard({ item, onDecide, busy }: { item: Approval; onDecide: (d: 
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-sm font-semibold tabular-nums">{fmt(item.amount)}</div>
+          <div className="text-right">
+            <div className="text-sm font-semibold tabular-nums">{fmtINRLocal(item.amount)}</div>
+            {item.currency && item.currency !== "INR" && item.amount_original != null && (
+              <div className="text-[10px] text-muted-foreground tabular-nums">
+                {fmtOrig(item.amount_original, item.currency)}
+                {item.fx_rate ? <> · @ ₹{Number(item.fx_rate).toFixed(2)}/{item.currency}</> : null}
+              </div>
+            )}
+          </div>
           {item.status === "pending" ? (
             <Badge variant="outline" className="border-warning/40 text-warning gap-1"><Clock className="w-3 h-3" /> Pending</Badge>
           ) : item.status === "approved" ? (
