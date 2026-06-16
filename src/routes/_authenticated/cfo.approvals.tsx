@@ -33,6 +33,8 @@ type Approval = {
   submitter: string | null;
   team: string | null;
   amount: number | null;
+  amount_original: number | null;
+  fx_rate: number | null;
   currency: string | null;
   summary: any;
   status: "pending" | "approved" | "rejected";
@@ -48,9 +50,20 @@ const sourceLabel: Record<string, string> = {
   it_cost: "IT Cost",
 };
 
-function fmt(n?: number | null) {
+function fmtINRLocal(n?: number | null) {
   if (n == null) return "—";
   return `₹${new Intl.NumberFormat("en-IN").format(Math.round(n))}`;
+}
+
+function fmtOrig(n?: number | null, code?: string | null) {
+  if (n == null) return null;
+  const c = code ?? "INR";
+  if (c === "INR") return null;
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 2 }).format(Number(n));
+  } catch {
+    return `${c} ${new Intl.NumberFormat("en-US").format(Math.round(Number(n)))}`;
+  }
 }
 
 function Approvals() {
