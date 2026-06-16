@@ -98,7 +98,7 @@ function Approvals() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Pending" value={String(stats.pending)} delta={fmt(stats.pendingAmount)} />
+          <StatCard label="Pending" value={String(stats.pending)} delta={fmtINRLocal(stats.pendingAmount)} />
           <StatCard label="Approved (all-time)" value={String(stats.approved)} accent="emerald" />
           <StatCard label="Rejected" value={String(stats.rejected)} />
           <StatCard label="Avg cycle" value="—" delta="set after approvals" accent="gold" />
@@ -155,7 +155,15 @@ function ApprovalCard({ item, onDecide, busy }: { item: Approval; onDecide: (d: 
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-sm font-semibold tabular-nums">{fmt(item.amount)}</div>
+          <div className="text-right">
+            <div className="text-sm font-semibold tabular-nums">{fmtINRLocal(item.amount)}</div>
+            {item.currency && item.currency !== "INR" && item.amount_original != null && (
+              <div className="text-[10px] text-muted-foreground tabular-nums">
+                {fmtOrig(item.amount_original, item.currency)}
+                {item.fx_rate ? <> · @ ₹{Number(item.fx_rate).toFixed(2)}/{item.currency}</> : null}
+              </div>
+            )}
+          </div>
           {item.status === "pending" ? (
             <Badge variant="outline" className="border-warning/40 text-warning gap-1"><Clock className="w-3 h-3" /> Pending</Badge>
           ) : item.status === "approved" ? (
