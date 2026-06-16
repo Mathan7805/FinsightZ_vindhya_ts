@@ -381,16 +381,20 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
               <th className="px-3 py-2">GSTIN</th>
               <th className="px-3 py-2 text-right">Taxable</th>
               <th className="px-3 py-2 text-right">GST</th>
-              <th className="px-3 py-2 text-right">Total</th>
+              <th className="px-3 py-2 text-right">Total (orig)</th>
+              <th className="px-3 py-2 text-right">Total in INR</th>
               <th className="px-3 py-2">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40">
             {rows.length === 0 ? (
-              <tr><td colSpan={10} className="px-4 py-10 text-center text-muted-foreground">
+              <tr><td colSpan={11} className="px-4 py-10 text-center text-muted-foreground">
                 {dirHandle ? "Watching folder — drop new files into it and they'll appear here." : "Link a folder above. FInsightZ will continuously watch it and auto-extract new invoices."}
               </td></tr>
-            ) : rows.map((r) => (
+            ) : rows.map((r) => {
+              const ccy = r.fields.currency ?? "INR";
+              const isForeign = ccy !== "INR";
+              return (
               <tr key={r.id} className="hover:bg-card/30">
                 <td className="px-4 py-2"><SaveMark row={r} /></td>
                 <td className="px-4 py-2 max-w-[260px] truncate">
@@ -402,12 +406,22 @@ function FolderZone({ cfg, rows, setRows }: { cfg: typeof FOLDERS[number]; rows:
                 <td className="px-3 py-2">{r.fields.invoice_date ?? "—"}</td>
                 <td className="px-3 py-2">{r.fields.party_name ?? "—"}</td>
                 <td className="px-3 py-2 font-mono text-[10px]">{r.fields.party_gstin ?? "—"}</td>
-                <td className="px-3 py-2 text-right tabular-nums">{fmtAmt(r.fields.taxable_amount)}</td>
-                <td className="px-3 py-2 text-right tabular-nums">{fmtAmt(r.fields.gst_amount)}</td>
-                <td className="px-3 py-2 text-right tabular-nums font-semibold">{fmtAmt(r.fields.amount)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{fmtMoney(r.fields.taxable_amount, ccy)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{fmtMoney(r.fields.gst_amount, ccy)}</td>
+                <td className="px-3 py-2 text-right tabular-nums">
+                  <div>{fmtMoney(r.fields.amount, ccy)}</div>
+                  {isForeign && <div className="text-[10px] text-muted-foreground">{ccy}</div>}
+                </td>
+                <td className="px-3 py-2 text-right tabular-nums font-semibold">
+                  <div>{fmtAmt(r.fields.amount_inr ?? (ccy === "INR" ? r.fields.amount : undefined))}</div>
+                  {isForeign && r.fields.fx_rate && (
+                    <div className="text-[10px] text-muted-foreground">@ ₹{r.fields.fx_rate.toFixed(2)}/{ccy}</div>
+                  )}
+                </td>
                 <td className="px-3 py-2">{statusBadge(r.fields.status)}</td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
