@@ -140,6 +140,7 @@ async function parseExcelRows(f: File, baseId: string): Promise<Row[]> {
       invoice_date: find(r, ["date", "billdate"])?.toString(),
       party_name: find(r, ["client", "customer", "vendor", "party", "name"])?.toString(),
       party_gstin: find(r, ["gstin", "gstno"])?.toString(),
+      currency: find(r, ["currency", "ccy"])?.toString(),
       amount: Number(find(r, ["amount", "total", "value", "grandtotal"]) ?? 0) || undefined,
       taxable_amount: Number(find(r, ["taxable", "basic", "subtotal"]) ?? 0) || undefined,
       gst_amount: Number(find(r, ["gst", "tax"]) ?? 0) || undefined,
