@@ -17,10 +17,12 @@ export type Database = {
       approvals: {
         Row: {
           amount: number | null
+          amount_original: number | null
           created_at: string
           currency: string | null
           decided_at: string | null
           decided_by: string | null
+          fx_rate: number | null
           id: string
           notes: string | null
           source_id: string
@@ -33,10 +35,12 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          amount_original?: number | null
           created_at?: string
           currency?: string | null
           decided_at?: string | null
           decided_by?: string | null
+          fx_rate?: number | null
           id?: string
           notes?: string | null
           source_id: string
@@ -49,10 +53,12 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          amount_original?: number | null
           created_at?: string
           currency?: string | null
           decided_at?: string | null
           decided_by?: string | null
+          fx_rate?: number | null
           id?: string
           notes?: string | null
           source_id?: string
@@ -68,12 +74,14 @@ export type Database = {
       invoices: {
         Row: {
           amount: number | null
+          amount_inr: number | null
           approval_status: string
           cost_center: string | null
           created_at: string
           currency: string | null
           decided_at: string | null
           decided_by: string | null
+          fx_rate: number | null
           gst_amount: number | null
           id: string
           invoice_date: string | null
@@ -89,12 +97,14 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          amount_inr?: number | null
           approval_status?: string
           cost_center?: string | null
           created_at?: string
           currency?: string | null
           decided_at?: string | null
           decided_by?: string | null
+          fx_rate?: number | null
           gst_amount?: number | null
           id?: string
           invoice_date?: string | null
@@ -110,12 +120,14 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          amount_inr?: number | null
           approval_status?: string
           cost_center?: string | null
           created_at?: string
           currency?: string | null
           decided_at?: string | null
           decided_by?: string | null
+          fx_rate?: number | null
           gst_amount?: number | null
           id?: string
           invoice_date?: string | null
