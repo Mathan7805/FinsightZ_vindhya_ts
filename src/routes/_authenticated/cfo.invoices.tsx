@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useServerFn } from "@tanstack/react-start";
 import { extractInvoice } from "@/lib/invoice-extract.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { toINR, fmtMoney, normalizeCurrency } from "@/lib/fx";
 import * as XLSX from "xlsx";
 
 
@@ -27,6 +28,14 @@ const nav = [
 type Kind = "client_issued" | "client_billing" | "vendor_received";
 
 async function persistInvoice(kind: Kind, filename: string, fields: any) {
+  const currency = normalizeCurrency(fields.currency);
+  const amt = Number(fields.amount) || null;
+  const { inr, rate } = toINR(amt, currency);
+  // mutate fields so the row UI reflects the normalised currency + INR
+  fields.currency = currency;
+  fields.amount_inr = inr;
+  fields.fx_rate = rate;
+
   const payload = {
     kind,
     source_filename: filename,
@@ -37,8 +46,10 @@ async function persistInvoice(kind: Kind, filename: string, fields: any) {
         : null,
     party_name: fields.party_name ?? null,
     party_gstin: fields.party_gstin ?? null,
-    currency: fields.currency ?? "INR",
-    amount: Number(fields.amount) || null,
+    currency,
+    amount: amt,
+    amount_inr: inr,
+    fx_rate: rate,
     taxable_amount: Number(fields.taxable_amount) || null,
     gst_amount: Number(fields.gst_amount) || null,
     party_status: fields.status ?? null,
@@ -58,8 +69,11 @@ async function persistInvoice(kind: Kind, filename: string, fields: any) {
     title,
     submitter: kind === "vendor_received" ? "AP folder watcher" : "AR folder watcher",
     team: "Finance",
-    amount: Number(fields.amount) || null,
-    summary: fields,
+    amount: inr,            // INR-normalised — feeds dashboards
+    amount_original: amt,   // original currency value
+    currency,
+    fx_rate: rate,
+    summary: { ...fields, amount_inr: inr, fx_rate: rate, currency },
   });
   return data.id;
 }
