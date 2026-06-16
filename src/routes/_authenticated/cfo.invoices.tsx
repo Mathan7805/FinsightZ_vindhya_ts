@@ -434,7 +434,7 @@ function CFOInvoices() {
   const [billing, setBilling] = useState<Row[]>([]);
   const [vendor, setVendor] = useState<Row[]>([]);
 
-  const totals = (rs: Row[]) => rs.reduce((s, r) => s + (Number(r.fields.amount) || 0), 0);
+  const totals = (rs: Row[]) => rs.reduce((s, r) => s + (Number(r.fields.amount_inr ?? (r.fields.currency === "INR" || !r.fields.currency ? r.fields.amount : 0)) || 0), 0);
 
   return (
     <AppShell nav={nav}>
