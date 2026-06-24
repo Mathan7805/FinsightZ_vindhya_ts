@@ -278,6 +278,39 @@ export type Database = {
           },
         ]
       }
+      users: {
+        Row: {
+          id: string
+          email: string
+          password_hash: string
+          persona: string
+          name: string
+          must_change_password: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          password_hash: string
+          persona: string
+          name: string
+          must_change_password?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          password_hash?: string
+          persona?: string
+          name?: string
+          must_change_password?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pnl_uploads: {
         Row: {
           created_at: string

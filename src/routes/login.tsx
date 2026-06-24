@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { Sparkles, ArrowRight, ShieldCheck, Loader2 } from "lucide-react";
 import { PERSONAS, useAuth, type Persona } from "@/lib/auth";
+import { loginUser } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,17 +13,48 @@ export const Route = createFileRoute("/login")({
 });
 
 function Login() {
-  const [persona, setPersona] = useState<Persona>("cfo");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    const u = login(persona, email);
-    navigate({ to: PERSONAS[u.persona].route });
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await loginUser({ data: { email, password } });
+
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+
+      const u = {
+        id: result.user.id,
+        persona: result.user.persona as Persona,
+        name: result.user.name,
+        email: result.user.email,
+        mustChangePassword: result.user.mustChangePassword,
+      };
+
+      setUser(u);
+
+      if (u.mustChangePassword) {
+        navigate({ to: "/change-password" });
+      } else {
+        navigate({ to: PERSONAS[u.persona].route });
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,33 +107,17 @@ function Login() {
         <form onSubmit={submit} className="w-full max-w-md space-y-6">
           <div>
             <div className="text-xs uppercase tracking-[0.25em] text-primary mb-3">Sign in</div>
-            <h2 className="font-display text-3xl font-bold">Choose your workspace</h2>
+            <h2 className="font-display text-3xl font-bold">Welcome back</h2>
             <p className="text-muted-foreground text-sm mt-2">
-              Each persona has a dedicated dashboard and permitted workflows.
+              Enter your credentials to access your dashboard.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {(Object.keys(PERSONAS) as Persona[]).map((p) => {
-              const meta = PERSONAS[p];
-              const active = persona === p;
-              return (
-                <button
-                  type="button"
-                  key={p}
-                  onClick={() => setPersona(p)}
-                  className={`text-left rounded-xl border p-3 transition-all ${
-                    active
-                      ? "border-primary bg-primary/10 shadow-glow"
-                      : "border-border bg-card/40 hover:border-primary/40"
-                  }`}
-                >
-                  <div className="text-sm font-semibold">{meta.label}</div>
-                  <div className="text-[11px] text-muted-foreground mt-0.5">{meta.tagline}</div>
-                </button>
-              );
-            })}
-          </div>
+          {error && (
+            <div className="rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
 
           <div className="space-y-3">
             <div className="space-y-1.5">
@@ -109,10 +125,11 @@ function Login() {
               <Input
                 id="email"
                 type="email"
-                placeholder={`${persona}@finsightz.io`}
+                placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="space-y-1.5">
@@ -124,16 +141,29 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
           </div>
 
-          <Button type="submit" className="w-full h-11 bg-[var(--gradient-emerald)] text-primary-foreground hover:opacity-95 shadow-glow">
-            Enter {PERSONAS[persona].label} dashboard <ArrowRight className="w-4 h-4 ml-1" />
+          <Button
+            type="submit"
+            className="w-full h-11 bg-[var(--gradient-emerald)] text-primary-foreground hover:opacity-95 shadow-glow"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Signing in…
+              </>
+            ) : (
+              <>
+                Sign in <ArrowRight className="w-4 h-4 ml-1" />
+              </>
+            )}
           </Button>
 
           <p className="text-[11px] text-muted-foreground text-center">
-            Demo build — any password works. You'll land on the {PERSONAS[persona].label} dashboard.
+            First time? Use the temporary password provided by your admin.
           </p>
         </form>
       </div>

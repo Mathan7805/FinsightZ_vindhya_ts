@@ -10,10 +10,12 @@ function AuthGate() {
   const { user, ready } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (ready && !user) navigate({ to: "/login" });
+    if (!ready) return;
+    if (!user) navigate({ to: "/login" });
+    else if (user.mustChangePassword) navigate({ to: "/change-password" });
   }, [ready, user, navigate]);
 
-  if (!ready || !user) {
+  if (!ready || !user || user.mustChangePassword) {
     return (
       <div className="min-h-screen grid place-items-center text-muted-foreground text-sm">
         Securing your workspace…
